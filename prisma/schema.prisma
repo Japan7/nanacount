@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Nanacount {
+  id          String    @id @default(uuid())
+  title       String
+  description String?
+  currency    String
+  members     Member[]
+  expenses    Expense[]
+}
+
+model Member {
+  id          Int       @id @default(autoincrement())
+  name        String
+  nanacount   Nanacount @relation(fields: [nanacountId], references: [id], onDelete: Cascade)
+  nanacountId String
+  expenses    Expense[]
+  shares      Share[]
+
+  @@unique([name, nanacountId])
+}
+
+model Expense {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String?
+  amount      Float
+  date        DateTime
+  author      Member    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId    Int
+  shares      Share[]
+  nanacount   Nanacount @relation(fields: [nanacountId], references: [id], onDelete: Cascade)
+  nanacountId String
+}
+
+model Share {
+  id        Int     @id @default(autoincrement())
+  member    Member  @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  memberId  Int
+  count     Float   @default(1)
+  amount    Float?
+  expense   Expense @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  expenseId Int
+
+  @@unique([memberId, expenseId])
+}

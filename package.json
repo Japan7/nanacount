@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-app",
+  "name": "nanacount",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,7 +10,13 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
+    "@heroicons/vue": "^2.1.1",
+    "@nuxtjs/tailwindcss": "^6.10.3",
+    "@prisma/client": "^5.7.1",
+    "@tailwindcss/typography": "^0.5.10",
+    "daisyui": "^4.5.0",
     "nuxt": "^3.9.0",
+    "prisma": "^5.7.1",
     "vue": "^3.4.5",
     "vue-router": "^4.2.5"
   }

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ArrowsRightLeftIcon, BanknotesIcon } from "@heroicons/vue/24/solid";
+
 const route = useRoute();
 const countId = route.params.id as string;
 
@@ -31,13 +33,22 @@ const currentMember = computed(() => {
 
     <div role="tablist" class="tabs tabs-boxed sticky top-2 z-50">
       <a
-        v-for="(name, i) in ['Expenses', 'Balances']"
         role="tab"
-        class="tab"
-        :class="{ 'tab-active': tabId === i }"
-        @click="tabId = i"
+        class="tab space-x-2"
+        :class="{ 'tab-active': tabId === 0 }"
+        @click="tabId = 0"
       >
-        {{ name }}
+        <BanknotesIcon class="h-4 w-4" />
+        <span>Expenses</span>
+      </a>
+      <a
+        role="tab"
+        class="tab space-x-2"
+        :class="{ 'tab-active': tabId === 1 }"
+        @click="tabId = 1"
+      >
+        <ArrowsRightLeftIcon class="h-4 w-4" />
+        <span>Balances</span>
       </a>
     </div>
 

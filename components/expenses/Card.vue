@@ -51,8 +51,11 @@ const impact = computed(() => {
         Impact on my balance:
         <span
           :class="{ 'text-red-500': impact < 0, 'text-green-500': impact > 0 }"
-          >€{{ impact.toFixed(2) }}</span
         >
+          {{ impact < 0 ? "-" : impact > 0 ? "+" : "" }}€{{
+            Math.abs(impact).toFixed(2)
+          }}
+        </span>
       </p>
     </div>
   </div>

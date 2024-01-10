@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { PlusIcon } from "@heroicons/vue/24/solid";
+import {
+  DocumentTextIcon,
+  PlusIcon,
+  UserGroupIcon,
+} from "@heroicons/vue/24/solid";
 
 const props = defineProps<{ count: CountData }>();
 
@@ -75,13 +79,22 @@ const submit = async () => {
 
       <div role="tablist" class="tabs tabs-boxed not-prose">
         <a
-          v-for="(name, i) in ['Infos', 'Participants']"
           role="tab"
-          class="tab"
-          :class="{ 'tab-active': tabId === i }"
-          @click="tabId = i"
+          class="tab space-x-2"
+          :class="{ 'tab-active': tabId === 0 }"
+          @click="tabId = 0"
         >
-          {{ name }}
+          <DocumentTextIcon class="h-4 w-4" />
+          <span>Infos</span>
+        </a>
+        <a
+          role="tab"
+          class="tab space-x-2"
+          :class="{ 'tab-active': tabId === 1 }"
+          @click="tabId = 1"
+        >
+          <UserGroupIcon class="h-4 w-4" />
+          <span>Participants</span>
         </a>
       </div>
 

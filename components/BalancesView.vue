@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{ countId: string }>();
+defineProps<{ count: CountData }>();
 </script>
 
 <template></template>

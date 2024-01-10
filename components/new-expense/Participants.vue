@@ -1,49 +1,30 @@
 <script setup lang="ts">
-const props = defineProps<{ countId: string; expenseAmount: number }>();
+const props = defineProps<{ count: CountData; expenseAmount: number }>();
 const model = defineModel<ExpenseShares>({ default: {} });
 
-const { data, pending, error, refresh } = await useFetch(
-  `/api/counts/${props.countId}`
-);
-
 const sortedMembers = computed(
-  () => data.value?.members.sort((a, b) => a.name.localeCompare(b.name)) ?? []
+  () => props.count?.members.sort((a, b) => a.name.localeCompare(b.name)) ?? []
 );
 
 const updateSharesAmount = () => {
-  let left = props.expenseAmount;
-
-  const done: number[] = [];
-  let nparts = 0;
-
-  // Apply custom amounts
-  for (const m of sortedMembers.value) {
-    const share = model.value[m.id];
-    if (share.fraction === "") {
-      left -= share.amount;
-      done.push(m.id);
+  const formattedShares: { fraction?: number; amount?: number }[] = [];
+  const mIds = sortedMembers.value.map((m) => m.id);
+  for (const id of mIds) {
+    const share = model.value[id];
+    if (share.amount !== "" && share.fraction === "") {
+      formattedShares.push({ amount: share.amount });
+    } else if (share.fraction !== "") {
+      formattedShares.push({ fraction: share.fraction });
     } else {
-      nparts += share.fraction;
+      return;
     }
   }
-
-  // Apply fractions
-  for (const m of sortedMembers.value) {
-    const share = model.value[m.id];
-    if (!done.includes(m.id) && share.fraction) {
-      let amount = share.fraction * (left / nparts);
-      if (amount < 0) {
-        amount = 0;
-      } else if (amount > left) {
-        amount = left;
-      } else {
-        amount = Math.ceil(amount * 100) / 100;
-      }
-      share.amount = amount;
-      left -= amount;
-      nparts -= share.fraction;
-    }
-    model.value[m.id] = share;
+  const shares = splitExpense(props.expenseAmount, formattedShares);
+  for (let i = 0; i < mIds.length; i++) {
+    model.value[mIds[i]] = {
+      fraction: model.value[mIds[i]].fraction,
+      amount: shares[i],
+    };
   }
 };
 
@@ -58,9 +39,36 @@ watchEffect(() => {
       <thead>
         <tr>
           <th class="w-0">
-            <!-- <label>
-              <input type="checkbox" class="checkbox" />
-            </label> -->
+            <label>
+              <input
+                type="checkbox"
+                class="checkbox"
+                :checked="
+                  sortedMembers.every(
+                    (m) => model[m.id].fraction || model[m.id].amount
+                  )
+                "
+                @click="
+                  () => {
+                    if (
+                      sortedMembers.every(
+                        (m) => model[m.id].fraction || model[m.id].amount
+                      )
+                    ) {
+                      for (const m of sortedMembers) {
+                        model[m.id] = { fraction: 0, amount: '' };
+                      }
+                    } else {
+                      for (const m of sortedMembers) {
+                        if (!(model[m.id].fraction || model[m.id].amount))
+                          model[m.id] = { fraction: 1, amount: '' };
+                      }
+                    }
+                    updateSharesAmount();
+                  }
+                "
+              />
+            </label>
           </th>
           <th>Name</th>
           <th class="w-1/5">Fraction</th>

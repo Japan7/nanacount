@@ -1,11 +1,7 @@
 <script setup lang="ts">
 import { PlusIcon } from "@heroicons/vue/24/solid";
 
-const props = defineProps<{ countId: string }>();
-
-const { data, pending, error, refresh } = await useFetch(
-  `/api/counts/${props.countId}`
-);
+const props = defineProps<{ count: CountData }>();
 
 const modalRef = ref<HTMLDialogElement | null>(null);
 
@@ -13,17 +9,17 @@ const tabId = ref(0);
 const title = ref<string>();
 const amount = ref<number>();
 const date = ref<string>();
-const author = ref(-1);
+const author = ref<number>();
 const shares = reactive<ExpenseShares>({});
 
 const resetShares = () => {
-  for (const m of data.value?.members ?? []) {
+  for (const m of props.count?.members ?? []) {
     shares[m.id] = { fraction: 1, amount: "" };
   }
 };
 
 const formValid = computed(
-  () => title.value && amount.value && date.value && author.value >= 0
+  () => title.value && amount.value && date.value && author.value
 );
 
 const submit = async () => {
@@ -33,17 +29,20 @@ const submit = async () => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      countId: props.countId,
+      countId: props.count!.id,
       title: title.value,
       // description: description.value,
       amount: amount.value,
       date: new Date(date.value!).toISOString(),
       authorId: author.value,
-      shares: Object.entries(shares).map(([memberId, share]) => ({
-        memberId: parseInt(memberId),
-        fraction: share.fraction !== "" ? share.fraction : undefined,
-        amount: share.fraction === "" ? share.amount : undefined,
-      })),
+      // FIXME: this is really ugly
+      shares: Object.entries(shares)
+        .map(([memberId, share]) => ({
+          memberId: parseInt(memberId),
+          fraction: share.fraction !== "" ? share.fraction : undefined,
+          amount: share.fraction === "" ? share.amount : undefined,
+        }))
+        .filter((s) => s.fraction || s.amount),
     }),
   });
 
@@ -62,7 +61,7 @@ const submit = async () => {
         title = undefined;
         amount = undefined;
         date = new Date().toISOString().split('T')[0];
-        author = -1;
+        author = undefined;
         resetShares();
         modalRef?.showModal();
       }
@@ -92,13 +91,13 @@ const submit = async () => {
         v-model:amount="amount"
         v-model:date="date"
         v-model:author="author"
-        :count-id="countId"
+        :count="count"
         class="mt-4"
       />
       <NewExpenseParticipants
         v-else-if="tabId === 1"
         v-model="shares"
-        :count-id="countId"
+        :count="count"
         :expense-amount="amount ?? 0"
       />
 

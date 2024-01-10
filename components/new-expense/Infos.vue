@@ -1,18 +1,14 @@
 <script setup lang="ts">
-const props = defineProps<{ countId: string }>();
-
-const { data, pending, error, refresh } = await useFetch(
-  `/api/counts/${props.countId}`
-);
+const props = defineProps<{ count: CountData }>();
 
 const sortedMembers = computed(
-  () => data.value?.members.sort((a, b) => a.name.localeCompare(b.name)) ?? []
+  () => props.count?.members.sort((a, b) => a.name.localeCompare(b.name)) ?? []
 );
 
 const title = defineModel<string>("title");
 const amount = defineModel<number>("amount");
 const date = defineModel<string>("date");
-const author = defineModel<number>("author", { default: -1 });
+const author = defineModel<number>("author");
 </script>
 
 <template>
@@ -43,7 +39,7 @@ const author = defineModel<number>("author", { default: -1 });
         <span class="label-text">Author</span>
       </div>
       <select class="select select-bordered" v-model.number="author">
-        <option disabled selected value="-1">Who paid?</option>
+        <option disabled selected value="undefined">Who paid?</option>
         <option v-for="m in sortedMembers" :value="m.id">{{ m.name }}</option>
       </select>
     </label>

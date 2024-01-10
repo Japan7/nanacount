@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client";
 
 export default defineEventHandler(async (event) => {
   const { title, description, currency, members } = await readBody(event);
-  const data: Prisma.NanacountCreateInput = {
+  const data: Prisma.CountCreateInput = {
     title,
     description,
     currency,
@@ -10,5 +10,5 @@ export default defineEventHandler(async (event) => {
       create: members.map((name: string) => ({ name })),
     },
   };
-  return await prisma.nanacount.create({ data });
+  return await prisma.count.create({ data });
 });

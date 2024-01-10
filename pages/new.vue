@@ -24,13 +24,13 @@ const submit = async () => {
     }),
   });
 
-  navigateTo(`/count/${res.id}`);
+  navigateTo(`/${res.id}`);
 };
 </script>
 
 <template>
   <div class="prose mx-auto p-4">
-    <h1>New count</h1>
+    <h1>New Count</h1>
 
     <div class="flex flex-col gap-y-2">
       <input
@@ -55,7 +55,7 @@ const submit = async () => {
       </label>
     </div>
 
-    <table class="table">
+    <table class="table table-sm">
       <thead>
         <tr>
           <th>Members</th>
@@ -67,11 +67,11 @@ const submit = async () => {
             <input
               type="text"
               placeholder="Name"
-              class="input input-bordered w-full"
+              class="input input-sm input-bordered w-full"
               v-model.trim="members[i]"
             />
             <button
-              class="btn"
+              class="btn btn-sm"
               @click="members = members.filter((_, j) => i !== j)"
             >
               <XMarkIcon class="h-6 w-6" />
@@ -80,7 +80,10 @@ const submit = async () => {
         </tr>
         <tr>
           <td>
-            <button class="btn btn-block btn-neutral" @click="members.push('')">
+            <button
+              class="btn btn-sm btn-block btn-neutral"
+              @click="members.push('')"
+            >
               <PlusIcon class="h-6 w-6" />
             </button>
           </td>

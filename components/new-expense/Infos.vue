@@ -1,9 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{ count: CountData }>();
-
-const sortedMembers = computed(
-  () => props.count?.members.sort((a, b) => a.name.localeCompare(b.name)) ?? []
-);
+defineProps<{ count: CountData }>();
 
 const title = defineModel<string>("title");
 const amount = defineModel<number>("amount");
@@ -40,7 +36,7 @@ const author = defineModel<number>("author");
       </div>
       <select class="select select-bordered" v-model.number="author">
         <option disabled selected value="undefined">Who paid?</option>
-        <option v-for="m in sortedMembers" :key="m.id" :value="m.id">
+        <option v-for="m in count.members" :key="m.id" :value="m.id">
           {{ m.name }}
         </option>
       </select>

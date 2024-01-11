@@ -102,7 +102,6 @@ export function computeReimbursments(
       });
     }
   }
-  console.log(balances);
 
   return reimb;
 }

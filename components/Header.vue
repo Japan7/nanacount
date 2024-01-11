@@ -47,7 +47,7 @@ const submit = async () => {
         <p
           class="font-semibold text-ellipsis whitespace-nowrap overflow-hidden"
         >
-          {{ count?.members.map((m) => m.name).join(", ") }}
+          {{ count.members.map((m) => m.name).join(", ") }}
         </p>
       </div>
       <p v-if="count?.description">{{ count.description }}</p>

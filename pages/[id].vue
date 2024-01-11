@@ -21,13 +21,16 @@ useHead({
   titleTemplate: `${data.value?.title} | %s`,
 });
 
-const sortedMembers = computed(
-  () => data.value?.members.sort((a, b) => a.name.localeCompare(b.name)) ?? []
-);
+watchEffect(() => {
+  if (data.value) {
+    data.value.members.sort((a, b) => a.name.localeCompare(b.name));
+  }
+});
 
 const tabId = ref(0);
 
-const currentMemberStr = useLocalStorage(`${countId}_currentMember`, "");
+const currentMemberStr = useCookie(`${countId}_currentMember`);
+currentMemberStr.value = currentMemberStr.value ?? "";
 const currentMember = computed(() => {
   const id = currentMemberStr.value;
   return id ? parseInt(id) : undefined;
@@ -47,7 +50,7 @@ const currentMember = computed(() => {
         v-model="currentMemberStr"
       >
         <option disabled selected value="">Identify as…</option>
-        <option v-for="m in sortedMembers" :value="m.id">{{ m.name }}</option>
+        <option v-for="m in data.members" :value="m.id">{{ m.name }}</option>
       </select>
       <button class="btn btn-sm btn-success" @click="refreshNuxtData()">
         <ArrowPathIcon class="h-4 w-4" />

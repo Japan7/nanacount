@@ -2,13 +2,9 @@
 const props = defineProps<{ count: CountData; expenseAmount: number }>();
 const model = defineModel<ExpenseShares>({ default: {} });
 
-const sortedMembers = computed(
-  () => props.count?.members.sort((a, b) => a.name.localeCompare(b.name)) ?? []
-);
-
 const updateSharesAmount = () => {
   const formattedShares: { fraction?: number; amount?: number }[] = [];
-  const mIds = sortedMembers.value.map((m) => m.id);
+  const mIds = props.count.members.map((m) => m.id);
   for (const id of mIds) {
     const share = model.value[id];
     if (share.amount !== "" && share.fraction === "") {
@@ -41,22 +37,22 @@ updateSharesAmount();
                 type="checkbox"
                 class="checkbox"
                 :checked="
-                  sortedMembers.every(
+                  count.members.every(
                     (m) => model[m.id].fraction || model[m.id].amount
                   )
                 "
                 @click="
                   () => {
                     if (
-                      sortedMembers.every(
+                      count.members.every(
                         (m) => model[m.id].fraction || model[m.id].amount
                       )
                     ) {
-                      for (const m of sortedMembers) {
+                      for (const m of count.members) {
                         model[m.id] = { fraction: 0, amount: '' };
                       }
                     } else {
-                      for (const m of sortedMembers) {
+                      for (const m of count.members) {
                         if (!(model[m.id].fraction || model[m.id].amount))
                           model[m.id] = { fraction: 1, amount: '' };
                       }
@@ -73,7 +69,7 @@ updateSharesAmount();
         </tr>
       </thead>
       <tbody>
-        <tr v-for="m in sortedMembers" :key="m.id">
+        <tr v-for="m in count.members" :key="m.id">
           <th>
             <label>
               <input

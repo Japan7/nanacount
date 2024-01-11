@@ -1,25 +1,21 @@
 <script setup lang="ts">
 const props = defineProps<{ count: CountData; currentMember?: number }>();
 
-const sortedMembers = computed(
-  () => props.count?.members.sort((a, b) => a.name.localeCompare(b.name)) ?? []
-);
-
 const balances = computed(() =>
-  props.count ? computeBalances(props.count.expenses, sortedMembers.value) : []
+  props.count ? computeBalances(props.count.expenses, props.count.members) : []
 );
 </script>
 
 <template>
   <main class="space-y-2">
     <BalancesChart
-      :members="sortedMembers"
+      :members="count.members"
       :balances="balances"
       :current-member="currentMember"
     />
     <BalancesReimbursementsTable
       :count="count"
-      :members="sortedMembers"
+      :members="count.members"
       :balances="balances"
       :current-member="currentMember"
     />

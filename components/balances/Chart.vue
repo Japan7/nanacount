@@ -48,8 +48,15 @@ const chartData = computed(() => ({
   <Bar
     id="my-chart-id"
     :options="{
-      responsive: true,
       indexAxis: 'y',
+      aspectRatio: 3 / 2,
+      scales: {
+        y: {
+          ticks: {
+            autoSkip: false,
+          },
+        },
+      },
       plugins: {
         legend: {
           display: false,

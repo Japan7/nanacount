@@ -64,7 +64,7 @@ const submit = async () => {
           <button class="btn">Cancel</button>
         </form>
         <button
-          class="btn btn-primary btn-wide"
+          class="btn btn-primary"
           :disabled="!countFormStore.formValid"
           @click="submit"
         >

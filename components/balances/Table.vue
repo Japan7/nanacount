@@ -91,9 +91,7 @@ const submit = async () => {
           <form method="dialog">
             <button class="btn">Cancel</button>
           </form>
-          <button class="btn btn-success btn-wide" @click="submit">
-            Confirm
-          </button>
+          <button class="btn btn-success" @click="submit">Confirm</button>
         </div>
       </div>
 

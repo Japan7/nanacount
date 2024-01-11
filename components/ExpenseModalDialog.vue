@@ -63,7 +63,7 @@ watchEffect(() => props.setModal(modalRef.value));
           <button class="btn">Cancel</button>
         </form>
         <button
-          class="btn btn-primary btn-wide"
+          class="btn btn-primary"
           :disabled="!expenseStore.formValid"
           @click="submit"
         >

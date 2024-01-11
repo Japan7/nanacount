@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { TrashIcon } from "@heroicons/vue/24/solid";
+
 const props = defineProps<{
   count: CountData;
   expense: ExpenseData;
@@ -48,6 +50,8 @@ const expenseStore = useExpenseStore();
 
 const dialogId = `expense-modal-${props.expense.id}`;
 
+const supprDialogRef = ref<HTMLDialogElement | null>(null);
+
 const showModal = () => {
   (document.getElementById(dialogId) as HTMLDialogElement).showModal();
 };
@@ -77,6 +81,16 @@ const submit = async () => {
   });
 
   console.log(res);
+  (document.getElementById(dialogId) as HTMLDialogElement).close();
+  refreshNuxtData();
+};
+
+const submitDelete = async () => {
+  const res = await $fetch(`/api/expenses/${props.expense.id}`, {
+    method: "DELETE",
+  });
+  console.log(res);
+  supprDialogRef.value?.close();
   (document.getElementById(dialogId) as HTMLDialogElement).close();
   refreshNuxtData();
 };
@@ -142,5 +156,27 @@ const submit = async () => {
     :count="count"
     :dialog-id="dialogId"
     :submit="submit"
-  />
+  >
+    <button
+      class="btn btn-error w-full mb-4 mt-0"
+      @click="supprDialogRef?.showModal()"
+    >
+      <TrashIcon class="h-6 w-6" />
+      <span>Delete Expense</span>
+    </button>
+    <dialog ref="supprDialogRef" class="modal modal-bottom sm:modal-middle">
+      <div class="modal-box prose">
+        <h2>Confirm</h2>
+        <div class="modal-action">
+          <form method="dialog">
+            <button class="btn">Cancel</button>
+          </form>
+          <button class="btn btn-error" @click="submitDelete">Delete</button>
+        </div>
+      </div>
+      <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
+  </ExpenseModalDialog>
 </template>

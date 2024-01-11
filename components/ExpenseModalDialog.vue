@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { DocumentTextIcon, UserGroupIcon } from "@heroicons/vue/24/solid";
 
-const props = defineProps<{
+defineProps<{
   title: string;
   count: CountData;
   dialogId: string;
@@ -23,6 +23,8 @@ const formValid = computed(
   <dialog :id="dialogId" class="modal modal-bottom sm:modal-middle">
     <div class="modal-box prose">
       <h2>{{ title }}</h2>
+
+      <slot />
 
       <div role="tablist" class="tabs tabs-boxed not-prose">
         <a

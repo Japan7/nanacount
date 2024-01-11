@@ -5,12 +5,6 @@ const modalRef = ref<HTMLDialogElement | null>(null);
 
 const countFormStore = useCountFormStore();
 
-const validMembers = computed(() => countFormStore.members.filter((p) => p));
-
-const formValid = computed(
-  () => countFormStore.title && validMembers.value.length > 0
-);
-
 const submit = async () => {
   const res = await $fetch(`/api/counts/${props.count!.id}`, {
     method: "PATCH",
@@ -21,7 +15,7 @@ const submit = async () => {
       title: countFormStore.title,
       description: countFormStore.description,
       currency: countFormStore.currency,
-      members: validMembers.value,
+      members: countFormStore.membersArray,
     }),
   });
 
@@ -71,7 +65,7 @@ const submit = async () => {
         </form>
         <button
           class="btn btn-primary btn-wide"
-          :disabled="!formValid"
+          :disabled="!countFormStore.formValid"
           @click="submit"
         >
           Save

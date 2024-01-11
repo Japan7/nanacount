@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { PlusIcon, XMarkIcon } from "@heroicons/vue/24/solid";
-
 const title = defineModel("title");
 const description = defineModel("description");
 const currency = defineModel("currency", { default: "EUR" });
-const members = defineModel("members", { default: [""] });
+const members = defineModel("members", { default: "" });
 </script>
 
 <template>
@@ -29,41 +27,15 @@ const members = defineModel("members", { default: [""] });
         <option disabled value="EUR">EUR</option>
       </select>
     </label>
+    <label class="form-control w-full">
+      <div class="label">
+        <span class="label-text">Members</span>
+        <span class="label-text-alt">(1 per line)</span>
+      </div>
+      <textarea
+        v-model.trim="members"
+        class="textarea textarea-bordered h-[25vh]"
+      />
+    </label>
   </div>
-
-  <table class="table table-sm">
-    <thead>
-      <tr>
-        <th>Members</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="(_, i) in members" :key="i">
-        <td class="flex gap-x-2">
-          <input
-            type="text"
-            placeholder="Name"
-            class="input input-sm input-bordered w-full"
-            v-model.trim="members[i]"
-          />
-          <button
-            class="btn btn-sm"
-            @click="members = members.filter((_, j) => i !== j)"
-          >
-            <XMarkIcon class="h-6 w-6" />
-          </button>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <button
-            class="btn btn-sm btn-block btn-neutral"
-            @click="members.push('')"
-          >
-            <PlusIcon class="h-6 w-6" />
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
 </template>

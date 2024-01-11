@@ -9,14 +9,6 @@ defineProps<{
 }>();
 
 const expenseStore = useExpenseStore();
-
-const formValid = computed(
-  () =>
-    expenseStore.title &&
-    expenseStore.amount &&
-    expenseStore.date &&
-    expenseStore.author
-);
 </script>
 
 <template>
@@ -69,7 +61,7 @@ const formValid = computed(
         </form>
         <button
           class="btn btn-primary btn-wide"
-          :disabled="!formValid"
+          :disabled="!expenseStore.formValid"
           @click="submit"
         >
           Save

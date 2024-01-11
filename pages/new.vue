@@ -6,12 +6,6 @@ useHead({
 const countFormStore = useCountFormStore();
 countFormStore.$reset();
 
-const validMembers = computed(() => countFormStore.members.filter((p) => p));
-
-const formValid = computed(
-  () => countFormStore.title && validMembers.value.length > 0
-);
-
 const submit = async () => {
   const res = await $fetch("/api/counts", {
     method: "POST",
@@ -22,7 +16,7 @@ const submit = async () => {
       title: countFormStore.title,
       description: countFormStore.description,
       currency: countFormStore.currency,
-      members: validMembers.value,
+      members: countFormStore.membersArray,
     }),
   });
 
@@ -42,8 +36,8 @@ const submit = async () => {
     />
 
     <button
-      class="btn btn-block btn-primary"
-      :disabled="!formValid"
+      class="btn btn-block btn-primary mt-4"
+      :disabled="!countFormStore.formValid"
       @click="submit"
     >
       Submit

@@ -8,6 +8,15 @@ export const useExpenseStore = defineStore("expense", () => {
   const author = ref<number>();
   const shares = reactive<ExpenseShares>({});
 
+  const formValid = computed(
+    () =>
+      title.value &&
+      amount.value &&
+      amount.value > 0 &&
+      date.value &&
+      author.value
+  );
+
   function $reset() {
     tabId.value = 0;
     title.value = undefined;
@@ -36,6 +45,7 @@ export const useExpenseStore = defineStore("expense", () => {
     date,
     author,
     shares,
+    formValid,
     $reset,
     load,
   };

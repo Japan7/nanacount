@@ -1,6 +1,11 @@
 {
   "name": "nanacount",
   "private": true,
+  "license": "MIT",
+  "repository": "github:Japan7/nanacount",
+  "contributors": [
+    "NextFire <git@yuru.moe>"
+  ],
   "type": "module",
   "scripts": {
     "build": "nuxt build",

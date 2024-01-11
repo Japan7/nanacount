@@ -9,21 +9,14 @@ const props = defineProps<{ count: CountData }>();
 
 const modalRef = ref<HTMLDialogElement | null>(null);
 
-const tabId = ref(0);
-const title = ref<string>();
-const amount = ref<number>();
-const date = ref<string>();
-const author = ref<number>();
-const shares = reactive<ExpenseShares>({});
-
-const resetShares = () => {
-  for (const m of props.count?.members ?? []) {
-    shares[m.id] = { fraction: 1, amount: "" };
-  }
-};
+const expenseStore = useExpenseStore();
 
 const formValid = computed(
-  () => title.value && amount.value && date.value && author.value
+  () =>
+    expenseStore.title &&
+    expenseStore.amount &&
+    expenseStore.date &&
+    expenseStore.author
 );
 
 const submit = async () => {
@@ -34,13 +27,13 @@ const submit = async () => {
     },
     body: JSON.stringify({
       countId: props.count!.id,
-      title: title.value,
+      title: expenseStore.title,
       // description: description.value,
-      amount: amount.value,
-      date: new Date(date.value!).toISOString(),
-      authorId: author.value,
+      amount: expenseStore.amount,
+      date: new Date(expenseStore.date!).toISOString(),
+      authorId: expenseStore.author,
       // FIXME: this is really ugly
-      shares: Object.entries(shares)
+      shares: Object.entries(expenseStore.shares)
         .map(([memberId, share]) => ({
           memberId: parseInt(memberId),
           fraction: share.fraction !== "" ? share.fraction : undefined,
@@ -61,12 +54,10 @@ const submit = async () => {
     class="btn btn-primary btn-block h-full"
     @click="
       () => {
-        tabId = 0;
-        title = undefined;
-        amount = undefined;
-        date = new Date().toISOString().split('T')[0];
-        author = undefined;
-        resetShares();
+        expenseStore.$reset();
+        for (const m of count?.members ?? []) {
+          expenseStore.shares[m.id] = { fraction: 1, amount: '' };
+        }
         modalRef?.showModal();
       }
     "
@@ -82,8 +73,8 @@ const submit = async () => {
         <a
           role="tab"
           class="tab space-x-2"
-          :class="{ 'tab-active': tabId === 0 }"
-          @click="tabId = 0"
+          :class="{ 'tab-active': expenseStore.tabId === 0 }"
+          @click="expenseStore.tabId = 0"
         >
           <DocumentTextIcon class="h-4 w-4" />
           <span>Infos</span>
@@ -91,8 +82,8 @@ const submit = async () => {
         <a
           role="tab"
           class="tab space-x-2"
-          :class="{ 'tab-active': tabId === 1 }"
-          @click="tabId = 1"
+          :class="{ 'tab-active': expenseStore.tabId === 1 }"
+          @click="expenseStore.tabId = 1"
         >
           <UserGroupIcon class="h-4 w-4" />
           <span>Participants</span>
@@ -100,19 +91,19 @@ const submit = async () => {
       </div>
 
       <NewExpenseInfos
-        v-if="tabId === 0"
-        v-model:title="title"
-        v-model:amount="amount"
-        v-model:date="date"
-        v-model:author="author"
+        v-if="expenseStore.tabId === 0"
+        v-model:title="expenseStore.title"
+        v-model:amount="expenseStore.amount"
+        v-model:date="expenseStore.date"
+        v-model:author="expenseStore.author"
         :count="count"
         class="mt-4"
       />
       <NewExpenseParticipants
-        v-else-if="tabId === 1"
-        v-model="shares"
+        v-else-if="expenseStore.tabId === 1"
+        v-model="expenseStore.shares"
         :count="count"
-        :expense-amount="amount ?? 0"
+        :expense-amount="expenseStore.amount ?? 0"
       />
 
       <div class="modal-action">

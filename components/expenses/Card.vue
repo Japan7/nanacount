@@ -30,12 +30,59 @@ const impact = computed(() => {
     return -selfShare;
   }
 });
+
+const expenseStore = useExpenseStore();
+
+const dialogId = `expense-modal-${props.expense.id}`;
+
+const showModal = () => {
+  (document.getElementById(dialogId) as HTMLDialogElement).showModal();
+};
+
+const submit = async () => {
+  const res = await $fetch(`/api/expenses/${props.expense.id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      countId: props.count!.id,
+      title: expenseStore.title,
+      // description: description.value,
+      amount: expenseStore.amount,
+      date: new Date(expenseStore.date!).toISOString(),
+      authorId: expenseStore.author,
+      // FIXME: this is really ugly
+      shares: Object.entries(expenseStore.shares)
+        .map(([memberId, share]) => ({
+          memberId: parseInt(memberId),
+          fraction: share.fraction !== "" ? share.fraction : undefined,
+          amount: share.fraction === "" ? share.amount : undefined,
+        }))
+        .filter((s) => s.fraction || s.amount),
+    }),
+  });
+
+  console.log(res);
+  (document.getElementById(dialogId) as HTMLDialogElement).close();
+  refreshNuxtData();
+};
 </script>
 
 <template>
   <div
     class="card card-compact card-bordered cursor-pointer hover:brightness-90 transition ease-in-out"
     :class="{ 'opacity-50': expense.title === 'Reimbursement' }"
+    @click="
+      () => {
+        expenseStore.$reset();
+        for (const m of count?.members ?? []) {
+          expenseStore.shares[m.id] = { fraction: 0, amount: '' };
+        }
+        expenseStore.load(expense);
+        showModal();
+      }
+    "
   >
     <div class="card-body gap-y-0">
       <h2 class="card-title text-primary">
@@ -60,4 +107,11 @@ const impact = computed(() => {
       </p>
     </div>
   </div>
+
+  <ExpenseModalDialog
+    title="Edit Expense"
+    :count="count"
+    :dialog-id="dialogId"
+    :submit="submit"
+  />
 </template>

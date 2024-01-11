@@ -16,6 +16,19 @@ export const useExpenseStore = defineStore("expense", () => {
     author.value = undefined;
   }
 
+  function load(expense: ExpenseData) {
+    title.value = expense.title;
+    amount.value = expense.amount;
+    date.value = new Date(expense.date).toISOString().split("T")[0];
+    author.value = expense.authorId;
+    expense.shares.forEach((share: any) => {
+      shares[share.memberId] = {
+        fraction: share.fraction ?? "",
+        amount: share.amount ?? "",
+      };
+    });
+  }
+
   return {
     tabId,
     title,
@@ -24,5 +37,6 @@ export const useExpenseStore = defineStore("expense", () => {
     author,
     shares,
     $reset,
+    load,
   };
 });

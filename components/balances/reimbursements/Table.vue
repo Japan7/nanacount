@@ -14,7 +14,11 @@ const reimbursements = computed(() => {
     while (balances[i] <= -0.01) {
       const j = balances.findIndex((v) => v >= 0.01);
       if (j === -1) {
-        throw new Error("No positive balance found");
+        if (i === balances.length - 1) {
+          break;
+        } else {
+          throw new Error("No positive balance found");
+        }
       }
       let amount = Math.min(-balances[i], balances[j]);
       amount = Math.ceil(amount * 100) / 100;

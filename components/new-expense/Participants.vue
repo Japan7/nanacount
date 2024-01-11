@@ -27,10 +27,7 @@ const updateSharesAmount = () => {
     };
   }
 };
-
-watchEffect(() => {
-  updateSharesAmount();
-});
+updateSharesAmount();
 </script>
 
 <template>

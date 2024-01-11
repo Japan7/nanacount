@@ -45,6 +45,7 @@ const reimbursements = computed(() => {
         <tbody>
           <tr
             v-for="r in reimbursements"
+            :key="`${r.from.id}-${r.to.id}`"
             :class="{ active: r.from.id === currentMember }"
           >
             <td class="font-bold text-right">{{ r.from.name }}</td>

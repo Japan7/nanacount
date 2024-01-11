@@ -33,6 +33,7 @@ const selfTotal = computed(() => {
     <main class="pb-14 flex flex-col gap-y-2">
       <ExpensesCard
         v-for="e in sortedExpenses"
+        :key="e.id"
         :count="count"
         :expense="e"
         :current-member="currentMember"

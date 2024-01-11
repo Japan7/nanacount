@@ -40,7 +40,9 @@ const author = defineModel<number>("author");
       </div>
       <select class="select select-bordered" v-model.number="author">
         <option disabled selected value="undefined">Who paid?</option>
-        <option v-for="m in sortedMembers" :value="m.id">{{ m.name }}</option>
+        <option v-for="m in sortedMembers" :key="m.id" :value="m.id">
+          {{ m.name }}
+        </option>
       </select>
     </label>
   </div>

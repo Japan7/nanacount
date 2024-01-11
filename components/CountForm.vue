@@ -38,7 +38,7 @@ const members = defineModel("members", { default: [""] });
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(_, i) in members">
+      <tr v-for="(_, i) in members" :key="i">
         <td class="flex gap-x-2">
           <input
             type="text"

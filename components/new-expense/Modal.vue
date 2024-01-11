@@ -47,6 +47,8 @@ const submit = async () => {
     @click="
       () => {
         expenseStore.$reset();
+        console.log(expenseStore.shares);
+
         for (const m of count?.members ?? []) {
           expenseStore.shares[m.id] = { fraction: 1, amount: '' };
         }

@@ -42,7 +42,7 @@ const balances = computed(() => {
       :balances="balances"
       :current-member="currentMember"
     />
-    <BalancesReimbTable
+    <BalancesReimbursementsTable
       :count="count"
       :members="sortedMembers"
       :balances="balances"

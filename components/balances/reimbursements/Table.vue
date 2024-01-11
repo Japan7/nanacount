@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { CheckIcon } from "@heroicons/vue/24/solid";
-
 const props = defineProps<{
   count: CountData;
   members: MemberData[];
@@ -50,9 +48,12 @@ const reimbursements = computed(() => {
             <td class="font-bold text-left">{{ r.to.name }}</td>
             <td class="text-primary text-center">€{{ r.amount.toFixed(2) }}</td>
             <td class="w-0">
-              <button class="btn btn-sm btn-success">
-                <CheckIcon class="w-4 h-4" />
-              </button>
+              <BalancesReimbursementsModal
+                :count="count"
+                :from="r.from"
+                :to="r.to"
+                :amount="r.amount"
+              />
             </td>
           </tr>
         </tbody>

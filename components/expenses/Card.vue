@@ -35,6 +35,7 @@ const impact = computed(() => {
 <template>
   <div
     class="card card-compact card-bordered cursor-pointer hover:brightness-90 transition ease-in-out"
+    :class="{ 'opacity-50': expense.title === 'Reimbursement' }"
   >
     <div class="card-body gap-y-0">
       <h2 class="card-title text-primary">

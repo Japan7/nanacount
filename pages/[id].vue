@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { ArrowsRightLeftIcon, CreditCardIcon } from "@heroicons/vue/24/solid";
+import {
+  ArrowsRightLeftIcon,
+  CreditCardIcon,
+  ArrowPathIcon,
+} from "@heroicons/vue/24/solid";
 
 const route = useRoute();
 const countId = route.params.id as string;
@@ -26,10 +30,18 @@ const currentMember = computed(() => {
   <div class="container mx-auto p-2 flex flex-col gap-y-2">
     <Header :count="data" />
 
-    <select class="select select-bordered select-sm" v-model="currentMemberStr">
-      <option disabled selected value="">Identify as…</option>
-      <option v-for="m in sortedMembers" :value="m.id">{{ m.name }}</option>
-    </select>
+    <div class="flex gap-x-2">
+      <select
+        class="flex-1 select select-bordered select-sm"
+        v-model="currentMemberStr"
+      >
+        <option disabled selected value="">Identify as…</option>
+        <option v-for="m in sortedMembers" :value="m.id">{{ m.name }}</option>
+      </select>
+      <button class="btn btn-sm btn-success" @click="refreshNuxtData()">
+        <ArrowPathIcon class="h-4 w-4" />
+      </button>
+    </div>
 
     <div role="tablist" class="lg:hidden tabs tabs-boxed sticky top-2 z-50">
       <a

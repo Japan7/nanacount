@@ -73,6 +73,7 @@ const submit = async () => {
   >
     <PlusIcon class="h-6 w-6" />
   </button>
+
   <dialog ref="modalRef" class="modal modal-bottom sm:modal-middle">
     <div class="modal-box prose">
       <h2>New Expense</h2>

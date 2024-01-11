@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowsRightLeftIcon, BanknotesIcon } from "@heroicons/vue/24/solid";
+import { ArrowsRightLeftIcon, CreditCardIcon } from "@heroicons/vue/24/solid";
 
 const route = useRoute();
 const countId = route.params.id as string;
@@ -38,7 +38,7 @@ const currentMember = computed(() => {
         :class="{ 'tab-active': tabId === 0 }"
         @click="tabId = 0"
       >
-        <BanknotesIcon class="h-4 w-4" />
+        <CreditCardIcon class="h-4 w-4" />
         <span>Expenses</span>
       </a>
       <a
@@ -57,6 +57,10 @@ const currentMember = computed(() => {
       :count="data"
       :current-member="currentMember"
     />
-    <BalancesView v-else-if="tabId === 1" :count="data" />
+    <BalancesView
+      v-else-if="tabId === 1"
+      :count="data"
+      :current-member="currentMember"
+    />
   </div>
 </template>

@@ -1,14 +1,16 @@
+import type { InternalApi } from "nitropack";
+
 export interface ExpenseShares {
   [id: number]:
     | { fraction: number; amount: number | "" }
     | { fraction: ""; amount: number };
 }
 
-// @ts-ignore
-export type { CountData } from "~/pages/[id].vue";
-export type MemberData = (CountData extends infer T | null
+export type CountData = InternalApi["/api/counts/:id"]["get"] extends
+  | infer T
+  | null
   ? T
-  : never)["members"][number];
-export type ExpenseData = (CountData extends infer T | null
-  ? T
-  : never)["expenses"][number];
+  : never;
+
+export type MemberData = CountData["members"][number];
+export type ExpenseData = CountData["expenses"][number];

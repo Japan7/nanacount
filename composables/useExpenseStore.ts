@@ -21,11 +21,11 @@ export const useExpenseStore = defineStore("expense", () => {
     amount.value = expense.amount;
     date.value = new Date(expense.date).toISOString().split("T")[0];
     author.value = expense.authorId;
-    expense.shares.forEach((share: any) => {
+    expense.shares.forEach((share) => {
       shares[share.memberId] = {
         fraction: share.fraction ?? "",
         amount: share.amount ?? "",
-      };
+      } as ExpenseShares[number];
     });
   }
 

@@ -11,7 +11,11 @@ const countId = route.params.id as string;
 const { data, pending, error, refresh } = await useFetch(
   `/api/counts/${countId}`
 );
-export type CountData = typeof data extends Ref<infer T> ? T : never;
+
+const loadingIndicator = useLoadingIndicator();
+watchEffect(() => {
+  pending.value ? loadingIndicator.start() : loadingIndicator.finish();
+});
 
 useHead({
   titleTemplate: `${data.value?.title} | %s`,
@@ -31,7 +35,10 @@ const currentMember = computed(() => {
 </script>
 
 <template>
-  <div class="container mx-auto p-2 flex flex-col gap-y-2">
+  <div
+    v-if="!pending && data"
+    class="container mx-auto p-2 flex flex-col gap-y-2"
+  >
     <Header :count="data" />
 
     <div class="flex gap-x-2">

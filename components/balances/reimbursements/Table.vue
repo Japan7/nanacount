@@ -6,35 +6,9 @@ const props = defineProps<{
   currentMember?: number;
 }>();
 
-const reimbursements = computed(() => {
-  const balances = [...props.balances];
-  const reimb: { from: MemberData; to: MemberData; amount: number }[] = [];
-
-  for (let i = 0; i < balances.length; i++) {
-    while (balances[i] <= -0.01) {
-      const j = balances.findIndex((v) => v >= 0.01);
-      if (j === -1) {
-        if (i === balances.length - 1) {
-          break;
-        } else {
-          throw new Error("No positive balance found");
-        }
-      }
-      let amount = Math.min(-balances[i], balances[j]);
-      amount = Math.ceil(amount * 100) / 100;
-      balances[i] += amount;
-      balances[j] -= amount;
-      reimb.push({
-        from: props.members[i],
-        to: props.members[j],
-        amount,
-      });
-    }
-  }
-
-  console.log(balances);
-  return reimb;
-});
+const reimbursements = computed(() =>
+  computeReimbursments(props.members, props.balances)
+);
 </script>
 
 <template>

@@ -3,7 +3,8 @@ const props = defineProps<{ count: CountData; currentMember?: number }>();
 
 const sortedExpenses = computed(() =>
   props.count?.expenses.sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    (a, b) =>
+      new Date(b.date).getTime() - new Date(a.date).getTime() || b.id - a.id
   )
 );
 

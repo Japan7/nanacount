@@ -1,4 +1,8 @@
 <script setup lang="ts">
+useHead({
+  titleTemplate: "New Count | %s",
+});
+
 const countFormStore = useCountFormStore();
 countFormStore.$reset();
 

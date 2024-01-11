@@ -13,6 +13,10 @@ const { data, pending, error, refresh } = await useFetch(
 );
 export type CountData = typeof data extends Ref<infer T> ? T : never;
 
+useHead({
+  titleTemplate: `${data.value?.title} | %s`,
+});
+
 const sortedMembers = computed(
   () => data.value?.members.sort((a, b) => a.name.localeCompare(b.name)) ?? []
 );

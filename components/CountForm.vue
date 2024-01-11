@@ -32,10 +32,7 @@ const members = defineModel("members", { default: "" });
         <span class="label-text">Members</span>
         <span class="label-text-alt">(1 per line)</span>
       </div>
-      <textarea
-        v-model.trim="members"
-        class="textarea textarea-bordered h-[25vh]"
-      />
+      <textarea v-model="members" class="textarea textarea-bordered h-[25vh]" />
     </label>
   </div>
 </template>

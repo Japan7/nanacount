@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { defineStore } from "pinia";
 
 export const useCountFormStore = defineStore("count-form", () => {
@@ -6,7 +7,9 @@ export const useCountFormStore = defineStore("count-form", () => {
   const currency = ref("EUR");
   const members = ref("");
 
-  const membersArray = computed(() => members.value.split("\n"));
+  const membersArray = computed(() =>
+    _.uniq(members.value.split("\n").filter((m) => m))
+  );
 
   const formValid = computed(() => title.value && membersArray.value);
 

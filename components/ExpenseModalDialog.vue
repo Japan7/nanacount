@@ -1,18 +1,21 @@
 <script setup lang="ts">
 import { DocumentTextIcon, UserGroupIcon } from "@heroicons/vue/24/solid";
 
-defineProps<{
+const props = defineProps<{
   title: string;
   count: CountData;
-  dialogId: string;
+  setModal: (modal: HTMLDialogElement | null) => void;
   submit: () => void;
 }>();
 
 const expenseStore = useExpenseStore();
+
+const modalRef = ref<HTMLDialogElement | null>(null);
+watchEffect(() => props.setModal(modalRef.value));
 </script>
 
 <template>
-  <dialog :id="dialogId" class="modal modal-bottom sm:modal-middle">
+  <dialog ref="modalRef" class="modal modal-bottom sm:modal-middle">
     <div class="modal-box prose">
       <h2>{{ title }}</h2>
 

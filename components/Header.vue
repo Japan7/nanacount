@@ -6,7 +6,7 @@ const modalRef = ref<HTMLDialogElement | null>(null);
 const countFormStore = useCountFormStore();
 
 const submit = async () => {
-  const res = await $fetch(`/api/counts/${props.count!.id}`, {
+  const res = await $fetch(`/api/counts/${props.count.id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -37,14 +37,14 @@ const submit = async () => {
   >
     <div class="card-body">
       <div>
-        <h2 class="card-title">{{ count?.title }}</h2>
+        <h2 class="card-title">{{ count.title }}</h2>
         <p
           class="font-semibold text-ellipsis whitespace-nowrap overflow-hidden"
         >
           {{ count.members.map((m) => m.name).join(", ") }}
         </p>
       </div>
-      <p v-if="count?.description">{{ count.description }}</p>
+      <p v-if="count.description">{{ count.description }}</p>
     </div>
   </div>
 

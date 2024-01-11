@@ -49,7 +49,7 @@ const chartData = computed(() => ({
     id="my-chart-id"
     :options="{
       indexAxis: 'y',
-      aspectRatio: 3 / 2,
+      aspectRatio: 1,
       scales: {
         y: {
           ticks: {

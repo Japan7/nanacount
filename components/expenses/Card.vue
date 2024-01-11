@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { TrashIcon } from "@heroicons/vue/24/solid";
-
 const props = defineProps<{
   count: CountData;
   expense: ExpenseData;
+  showModal: () => void;
   currentMember?: number;
 }>();
 
 const author = computed(() => {
-  return props.count?.members.find((m) => m.id === props.expense.authorId);
+  return props.count.members.find((m) => m.id === props.expense.authorId);
 });
 
 const resolvedShares = computed(() =>
@@ -24,7 +23,7 @@ const resolvedShares = computed(() =>
 const concerns = computed(() => {
   const concerned: MemberData[] = [];
   const notConcerned: MemberData[] = [];
-  for (const m of props.count?.members ?? []) {
+  for (const m of props.count.members ?? []) {
     if (props.expense.shares.find((s) => s.memberId === m.id)) {
       concerned.push(m);
     } else {
@@ -47,53 +46,6 @@ const impact = computed(() => {
 });
 
 const expenseStore = useExpenseStore();
-
-const dialogId = `expense-modal-${props.expense.id}`;
-
-const supprDialogRef = ref<HTMLDialogElement | null>(null);
-
-const showModal = () => {
-  (document.getElementById(dialogId) as HTMLDialogElement).showModal();
-};
-
-const submit = async () => {
-  const res = await $fetch(`/api/expenses/${props.expense.id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      countId: props.count!.id,
-      title: expenseStore.title,
-      // description: description.value,
-      amount: expenseStore.amount,
-      date: new Date(expenseStore.date!).toISOString(),
-      authorId: expenseStore.author,
-      // FIXME: this is really ugly
-      shares: Object.entries(expenseStore.shares)
-        .map(([memberId, share]) => ({
-          memberId: parseInt(memberId),
-          fraction: share.fraction !== "" ? share.fraction : undefined,
-          amount: share.fraction === "" ? share.amount : undefined,
-        }))
-        .filter((s) => s.fraction || s.amount),
-    }),
-  });
-
-  console.log(res);
-  (document.getElementById(dialogId) as HTMLDialogElement).close();
-  refreshNuxtData();
-};
-
-const submitDelete = async () => {
-  const res = await $fetch(`/api/expenses/${props.expense.id}`, {
-    method: "DELETE",
-  });
-  console.log(res);
-  supprDialogRef.value?.close();
-  (document.getElementById(dialogId) as HTMLDialogElement).close();
-  refreshNuxtData();
-};
 </script>
 
 <template>
@@ -103,7 +55,7 @@ const submitDelete = async () => {
     @click="
       () => {
         expenseStore.$reset();
-        for (const m of count?.members ?? []) {
+        for (const m of count.members ?? []) {
           expenseStore.shares[m.id] = { fraction: 0, amount: '' };
         }
         expenseStore.load(expense);
@@ -155,33 +107,4 @@ const submitDelete = async () => {
       </div>
     </div>
   </div>
-
-  <ExpenseModalDialog
-    title="Edit Expense"
-    :count="count"
-    :dialog-id="dialogId"
-    :submit="submit"
-  >
-    <button
-      class="btn btn-error w-full mb-4 mt-0"
-      @click="supprDialogRef?.showModal()"
-    >
-      <TrashIcon class="h-6 w-6" />
-      <span>Delete Expense</span>
-    </button>
-    <dialog ref="supprDialogRef" class="modal modal-bottom sm:modal-middle">
-      <div class="modal-box prose">
-        <h2>Confirm</h2>
-        <div class="modal-action">
-          <form method="dialog">
-            <button class="btn">Cancel</button>
-          </form>
-          <button class="btn btn-error" @click="submitDelete">Delete</button>
-        </div>
-      </div>
-      <form method="dialog" class="modal-backdrop">
-        <button>close</button>
-      </form>
-    </dialog>
-  </ExpenseModalDialog>
 </template>

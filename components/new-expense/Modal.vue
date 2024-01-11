@@ -5,11 +5,7 @@ const props = defineProps<{ count: CountData }>();
 
 const expenseStore = useExpenseStore();
 
-const dialogId = "new-expense-modal";
-
-const showModal = () => {
-  (document.getElementById(dialogId) as HTMLDialogElement).showModal();
-};
+const modalRef = ref<HTMLDialogElement | null>(null);
 
 const submit = async () => {
   const res = await $fetch("/api/expenses", {
@@ -18,7 +14,7 @@ const submit = async () => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      countId: props.count!.id,
+      countId: props.count.id,
       title: expenseStore.title,
       // description: description.value,
       amount: expenseStore.amount,
@@ -36,7 +32,7 @@ const submit = async () => {
   });
 
   console.log(res);
-  (document.getElementById(dialogId) as HTMLDialogElement).close();
+  modalRef.value!.close();
   refreshNuxtData();
 };
 </script>
@@ -47,10 +43,10 @@ const submit = async () => {
     @click="
       () => {
         expenseStore.$reset();
-        for (const m of count?.members ?? []) {
+        for (const m of count.members ?? []) {
           expenseStore.shares[m.id] = { fraction: 1, amount: '' };
         }
-        showModal();
+        modalRef?.showModal();
       }
     "
   >
@@ -59,8 +55,8 @@ const submit = async () => {
 
   <ExpenseModalDialog
     title="New Expense"
+    :setModal="(m) => (modalRef = m)"
     :count="count"
-    :dialog-id="dialogId"
     :submit="submit"
   />
 </template>

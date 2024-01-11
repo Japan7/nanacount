@@ -8,11 +8,18 @@ const balances = computed(() =>
 
 <template>
   <main class="space-y-2">
-    <BalancesChart
-      :members="count.members"
-      :balances="balances"
-      :current-member="currentMember"
-    />
+    <div tabindex="0" class="collapse collapse-arrow card-bordered">
+      <input type="checkbox" />
+      <div class="collapse-title card-title">Balance Chart</div>
+      <div class="collapse-content h-fit">
+        <BalancesChart
+          :members="count.members"
+          :balances="balances"
+          :current-member="currentMember"
+        />
+      </div>
+    </div>
+
     <BalancesTable
       :count="count"
       :members="count.members"

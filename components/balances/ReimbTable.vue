@@ -19,7 +19,7 @@ const reimbursements = computed(() => {
         throw new Error("No positive balance found");
       }
       let amount = Math.min(-balances[i], balances[j]);
-      amount = Math.floor(amount * 100) / 100;
+      amount = Math.ceil(amount * 100) / 100;
       balances[i] += amount;
       balances[j] -= amount;
       reimb.push({

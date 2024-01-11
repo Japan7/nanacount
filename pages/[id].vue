@@ -31,7 +31,7 @@ const currentMember = computed(() => {
       <option v-for="m in sortedMembers" :value="m.id">{{ m.name }}</option>
     </select>
 
-    <div role="tablist" class="tabs tabs-boxed sticky top-2 z-50">
+    <div role="tablist" class="lg:hidden tabs tabs-boxed sticky top-2 z-50">
       <a
         role="tab"
         class="tab space-x-2"
@@ -52,15 +52,19 @@ const currentMember = computed(() => {
       </a>
     </div>
 
-    <ExpensesView
-      v-if="tabId === 0"
-      :count="data"
-      :current-member="currentMember"
-    />
-    <BalancesView
-      v-else-if="tabId === 1"
-      :count="data"
-      :current-member="currentMember"
-    />
+    <div class="lg:grid grid-cols-2 gap-4">
+      <ExpensesView
+        class="lg:block"
+        :class="{ hidden: tabId !== 0 }"
+        :count="data"
+        :current-member="currentMember"
+      />
+      <BalancesView
+        class="lg:block lg:pb-14"
+        :class="{ hidden: tabId !== 1 }"
+        :count="data"
+        :current-member="currentMember"
+      />
+    </div>
   </div>
 </template>

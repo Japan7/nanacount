@@ -36,7 +36,7 @@ const balances = computed(() => {
 </script>
 
 <template>
-  <main class="flex flex-col gap-y-4">
+  <main class="space-y-2">
     <BalancesChart
       :members="sortedMembers"
       :balances="balances"

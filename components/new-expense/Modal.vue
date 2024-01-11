@@ -58,7 +58,7 @@ const submit = async () => {
 
 <template>
   <button
-    class="btn btn-secondary btn-block h-full"
+    class="btn btn-primary btn-block h-full"
     @click="
       () => {
         tabId = 0;

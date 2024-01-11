@@ -29,30 +29,29 @@ const selfTotal = computed(() => {
 </script>
 
 <template>
-  <main class="pb-14 flex flex-col gap-y-2">
-    <ExpensesCard
-      v-for="e in sortedExpenses"
-      :count="count"
-      :expense="e"
-      :current-member="currentMember"
-    />
-  </main>
-
-  <div class="btm-nav container mx-auto p-1 gap-x-1">
-    <div class="card card-compact bg-base-200 text-xs cursor-default">
-      <template v-if="currentMember">
-        <h3 class="uppercase">My Total</h3>
-        <p class="font-bold">€{{ selfTotal }}</p>
-      </template>
-    </div>
-
-    <div class="cursor-default">
-      <NewExpenseModal :count="count" />
-    </div>
-
-    <div class="card card-compact bg-base-200 text-xs cursor-default">
-      <h3 class="uppercase">Total Expenses</h3>
-      <p class="font-bold">€{{ total }}</p>
+  <div>
+    <main class="pb-14 flex flex-col gap-y-2">
+      <ExpensesCard
+        v-for="e in sortedExpenses"
+        :count="count"
+        :expense="e"
+        :current-member="currentMember"
+      />
+    </main>
+    <div class="btm-nav container mx-auto p-1 gap-x-1 z-50">
+      <div class="card card-compact bg-base-200 text-xs cursor-default">
+        <template v-if="currentMember">
+          <h3 class="uppercase">My Total</h3>
+          <p class="font-bold">€{{ selfTotal }}</p>
+        </template>
+      </div>
+      <div class="cursor-default">
+        <NewExpenseModal :count="count" />
+      </div>
+      <div class="card card-compact bg-base-200 text-xs cursor-default">
+        <h3 class="uppercase">Total Expenses</h3>
+        <p class="font-bold">€{{ total }}</p>
+      </div>
     </div>
   </div>
 </template>

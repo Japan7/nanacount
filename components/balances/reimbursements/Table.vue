@@ -23,7 +23,7 @@ const reimbursements = computed(() =>
             :class="{ active: r.from.id === currentMember }"
           >
             <td class="font-bold text-right">{{ r.from.name }}</td>
-            <td class="w-0">owes</td>
+            <td class="w-0 text-center">owes</td>
             <td class="font-bold text-left">{{ r.to.name }}</td>
             <td class="text-primary text-center">€{{ r.amount.toFixed(2) }}</td>
             <td class="w-0">

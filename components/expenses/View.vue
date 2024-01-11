@@ -43,7 +43,7 @@ const selfTotal = computed(() => {
       <div class="card card-compact bg-base-200 text-xs cursor-default">
         <template v-if="currentMember">
           <h3 class="uppercase">My Total</h3>
-          <p class="font-bold">€{{ selfTotal }}</p>
+          <p class="font-bold">€{{ selfTotal?.toFixed(2) }}</p>
         </template>
       </div>
       <div class="cursor-default">
@@ -51,7 +51,7 @@ const selfTotal = computed(() => {
       </div>
       <div class="card card-compact bg-base-200 text-xs cursor-default">
         <h3 class="uppercase">Total Expenses</h3>
-        <p class="font-bold">€{{ total }}</p>
+        <p class="font-bold">€{{ total?.toFixed(2) }}</p>
       </div>
     </div>
   </div>

@@ -4,7 +4,9 @@ export default defineNuxtConfig({
   modules: ["@nuxtjs/tailwindcss", "@pinia/nuxt"],
   app: {
     head: {
-      viewport: "width=device-width, initial-scale=1, viewport-fit=cover", // https://github.com/saadeghi/daisyui/issues/1732
+      // https://github.com/saadeghi/daisyui/issues/1732
+      viewport:
+        "width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover",
       title: "nanacount",
       meta: [
         { name: "description", content: "T**count but it's a webapp." },

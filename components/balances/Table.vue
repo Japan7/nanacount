@@ -56,7 +56,7 @@ const submit = async () => {
             <td class="w-0 text-center">owes</td>
             <td class="font-bold text-left">{{ r.to.name }}</td>
             <td class="text-primary text-center">€{{ r.amount.toFixed(2) }}</td>
-            <td class="w-0">
+            <td class="w-0 text-right">
               <button
                 class="btn btn-sm btn-success"
                 @click="

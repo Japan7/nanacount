@@ -3,7 +3,7 @@ import { PlusIcon } from "@heroicons/vue/24/solid";
 
 const props = defineProps<{ count: CountData }>();
 
-const expenseStore = useExpenseStore();
+const expenseFormStore = useExpenseFormStore();
 
 const modalRef = ref<HTMLDialogElement | null>(null);
 
@@ -15,13 +15,13 @@ const submit = async () => {
     },
     body: JSON.stringify({
       countId: props.count.id,
-      title: expenseStore.title,
-      // description: description.value,
-      amount: expenseStore.amount,
-      date: new Date(expenseStore.date!).toISOString(),
-      authorId: expenseStore.author,
+      title: expenseFormStore.title,
+      description: expenseFormStore.description,
+      amount: expenseFormStore.amount,
+      date: new Date(expenseFormStore.date!).toISOString(),
+      authorId: expenseFormStore.author,
       // FIXME: this is really ugly
-      shares: Object.entries(expenseStore.shares)
+      shares: Object.entries(expenseFormStore.shares)
         .map(([memberId, share]) => ({
           memberId: parseInt(memberId),
           fraction: share.fraction !== "" ? share.fraction : undefined,
@@ -42,9 +42,9 @@ const submit = async () => {
     class="btn btn-primary btn-block h-full"
     @click="
       () => {
-        expenseStore.$reset();
+        expenseFormStore.$reset();
         for (const m of count.members ?? []) {
-          expenseStore.shares[m.id] = { fraction: 1, amount: '' };
+          expenseFormStore.shares[m.id] = { fraction: 1, amount: '' };
         }
         modalRef?.showModal();
       }

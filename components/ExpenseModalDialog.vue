@@ -8,7 +8,7 @@ const props = defineProps<{
   submit: () => void;
 }>();
 
-const expenseStore = useExpenseStore();
+const expenseFormStore = useExpenseFormStore();
 
 const modalRef = ref<HTMLDialogElement | null>(null);
 watchEffect(() => props.setModal(modalRef.value));
@@ -25,8 +25,8 @@ watchEffect(() => props.setModal(modalRef.value));
         <a
           role="tab"
           class="tab space-x-2"
-          :class="{ 'tab-active': expenseStore.tabId === 0 }"
-          @click="expenseStore.tabId = 0"
+          :class="{ 'tab-active': expenseFormStore.tabId === 0 }"
+          @click="expenseFormStore.tabId = 0"
         >
           <DocumentTextIcon class="h-4 w-4" />
           <span>Infos</span>
@@ -34,8 +34,8 @@ watchEffect(() => props.setModal(modalRef.value));
         <a
           role="tab"
           class="tab space-x-2"
-          :class="{ 'tab-active': expenseStore.tabId === 1 }"
-          @click="expenseStore.tabId = 1"
+          :class="{ 'tab-active': expenseFormStore.tabId === 1 }"
+          @click="expenseFormStore.tabId = 1"
         >
           <UserGroupIcon class="h-4 w-4" />
           <span>Participants</span>
@@ -43,19 +43,20 @@ watchEffect(() => props.setModal(modalRef.value));
       </div>
 
       <NewExpenseInfos
-        v-if="expenseStore.tabId === 0"
-        v-model:title="expenseStore.title"
-        v-model:amount="expenseStore.amount"
-        v-model:date="expenseStore.date"
-        v-model:author="expenseStore.author"
+        v-if="expenseFormStore.tabId === 0"
+        v-model:title="expenseFormStore.title"
+        v-model:description="expenseFormStore.description"
+        v-model:amount="expenseFormStore.amount"
+        v-model:date="expenseFormStore.date"
+        v-model:author="expenseFormStore.author"
         :count="count"
         class="mt-4"
       />
       <NewExpenseParticipants
-        v-else-if="expenseStore.tabId === 1"
-        v-model="expenseStore.shares"
+        v-else-if="expenseFormStore.tabId === 1"
+        v-model="expenseFormStore.shares"
         :count="count"
-        :expense-amount="expenseStore.amount ?? 0"
+        :expense-amount="expenseFormStore.amount ?? 0"
       />
 
       <div class="modal-action">
@@ -64,7 +65,7 @@ watchEffect(() => props.setModal(modalRef.value));
         </form>
         <button
           class="btn btn-primary"
-          :disabled="!expenseStore.formValid"
+          :disabled="!expenseFormStore.formValid"
           @click="submit"
         >
           Save

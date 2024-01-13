@@ -37,7 +37,7 @@ const selfTotal = computed(() =>
 const modalRef = ref<HTMLDialogElement | null>(null);
 const supprModalRef = ref<HTMLDialogElement | null>(null);
 
-const expenseStore = useExpenseStore();
+const expenseFormStore = useExpenseFormStore();
 const selectedExpense = ref<ExpenseData>();
 
 const submit = async () => {
@@ -48,13 +48,13 @@ const submit = async () => {
     },
     body: JSON.stringify({
       countId: props.count.id,
-      title: expenseStore.title,
-      // description: description.value,
-      amount: expenseStore.amount,
-      date: new Date(expenseStore.date!).toISOString(),
-      authorId: expenseStore.author,
+      title: expenseFormStore.title,
+      description: expenseFormStore.description,
+      amount: expenseFormStore.amount,
+      date: new Date(expenseFormStore.date!).toISOString(),
+      authorId: expenseFormStore.author,
       // FIXME: this is really ugly
-      shares: Object.entries(expenseStore.shares)
+      shares: Object.entries(expenseFormStore.shares)
         .map(([memberId, share]) => ({
           memberId: parseInt(memberId),
           fraction: share.fraction !== "" ? share.fraction : undefined,

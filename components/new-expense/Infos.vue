@@ -2,6 +2,7 @@
 defineProps<{ count: CountData }>();
 
 const title = defineModel<string>("title");
+const description = defineModel<string>("description");
 const amount = defineModel<number>("amount");
 const date = defineModel<string>("date");
 const author = defineModel<number>("author");
@@ -16,11 +17,17 @@ const author = defineModel<number>("author");
       v-model.trim="title"
     />
 
+    <textarea
+      placeholder="Description"
+      class="textarea textarea-bordered w-full"
+      v-model.trim="description"
+    />
+
     <div class="flex items-center gap-x-2">
       <input
         type="number"
         placeholder="Amount"
-        class="input input-bordered w-full text-right"
+        class="input input-bordered w-full"
         v-model="amount"
       />
       <span class="text-xl">€</span>

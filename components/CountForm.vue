@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const title = defineModel("title");
-const description = defineModel("description");
+const description = defineModel("description", { default: "" });
 const currency = defineModel("currency", { default: "EUR" });
 const members = defineModel("members", { default: "" });
 </script>
@@ -14,10 +14,9 @@ const members = defineModel("members", { default: "" });
       v-model.trim="title"
     />
 
-    <input
-      type="text"
+    <textarea
       placeholder="Description"
-      class="input input-bordered w-full"
+      class="textarea textarea-bordered w-full"
       v-model.trim="description"
     />
 

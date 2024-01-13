@@ -36,7 +36,7 @@ const impact = computed(() => {
   }
 });
 
-const expenseStore = useExpenseStore();
+const expenseFormStore = useExpenseFormStore();
 </script>
 
 <template>
@@ -45,11 +45,11 @@ const expenseStore = useExpenseStore();
     :class="{ 'opacity-50': expense.title === 'Reimbursement' }"
     @click="
       () => {
-        expenseStore.$reset();
+        expenseFormStore.$reset();
         for (const m of count.members ?? []) {
-          expenseStore.shares[m.id] = { fraction: 0, amount: '' };
+          expenseFormStore.shares[m.id] = { fraction: 0, amount: '' };
         }
-        expenseStore.load(expense);
+        expenseFormStore.load(expense);
         showModal();
       }
     "

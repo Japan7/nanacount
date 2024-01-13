@@ -2,27 +2,27 @@ import _ from "lodash";
 import { defineStore } from "pinia";
 
 export const useCountFormStore = defineStore("count-form", () => {
-  const title = ref("");
-  const description = ref("");
+  const title = ref<string>();
+  const description = ref<string>();
   const currency = ref("EUR");
-  const members = ref("");
+  const members = ref<string>();
 
   const membersArray = computed(() =>
-    _.uniq(members.value.split("\n").filter((m) => m))
+    _.uniq(members.value?.split("\n").filter((m) => m))
   );
 
-  const formValid = computed(() => title.value && membersArray.value);
+  const formValid = computed(() => title.value && membersArray.value.length);
 
   function $reset() {
-    title.value = "";
-    description.value = "";
+    title.value = undefined;
+    description.value = undefined;
     currency.value = "EUR";
-    members.value = "";
+    members.value = undefined;
   }
 
   function load(count: CountData) {
-    title.value = count.title ?? "";
-    description.value = count.description ?? "";
+    title.value = count.title;
+    description.value = count.description ?? undefined;
     currency.value = count.currency ?? "EUR";
     members.value = count.members.map((m) => m.name).join("\n");
   }

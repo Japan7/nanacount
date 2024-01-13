@@ -15,6 +15,7 @@ const author = defineModel<number>("author");
       class="input input-bordered w-full"
       v-model.trim="title"
     />
+
     <div class="flex items-center gap-x-2">
       <input
         type="number"
@@ -24,12 +25,14 @@ const author = defineModel<number>("author");
       />
       <span class="text-xl">€</span>
     </div>
+
     <label class="form-control w-full">
       <div class="label">
         <span class="label-text">Date</span>
       </div>
       <input type="date" class="input input-bordered w-full" v-model="date" />
     </label>
+
     <label class="form-control w-full">
       <div class="label">
         <span class="label-text">Author</span>

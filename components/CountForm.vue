@@ -13,12 +13,14 @@ const members = defineModel("members", { default: "" });
       class="input input-bordered w-full"
       v-model.trim="title"
     />
+
     <input
       type="text"
       placeholder="Description"
       class="input input-bordered w-full"
       v-model.trim="description"
     />
+
     <label class="form-control w-full">
       <div class="label">
         <span class="label-text">Currency</span>
@@ -27,6 +29,7 @@ const members = defineModel("members", { default: "" });
         <option disabled value="EUR">EUR</option>
       </select>
     </label>
+
     <label class="form-control w-full">
       <div class="label">
         <span class="label-text">Members</span>

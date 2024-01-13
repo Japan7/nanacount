@@ -1,4 +1,4 @@
-export function splitExpense(
+export function computeSharesAmount(
   amount: number,
   shares: { fraction?: number; amount?: number }[]
 ): number[] {
@@ -26,17 +26,20 @@ export function splitExpense(
     if (resolved[idx] === undefined) {
       const share = shares[idx];
 
+      let amount: number;
       if (share.fraction === undefined) {
         throw new Error("Invalid share");
-      }
-
-      let amount = share.fraction * (left / nparts);
-      if (amount < 0) {
+      } else if (share.fraction === 0) {
         amount = 0;
-      } else if (amount > left) {
-        amount = left;
       } else {
-        amount = Math.ceil(amount * 100) / 100;
+        amount = share.fraction * (left / nparts);
+        if (amount < 0) {
+          amount = 0;
+        } else if (amount > left) {
+          amount = left;
+        } else {
+          amount = Math.ceil(amount * 100) / 100;
+        }
       }
 
       resolved[idx] = amount;
@@ -53,7 +56,7 @@ export function computeBalances(
   members: MemberData[]
 ) {
   const resolved = expenses.map((e) =>
-    splitExpense(
+    computeSharesAmount(
       e.amount,
       e.shares.map((s) => ({
         fraction: s.fraction !== null ? s.fraction : undefined,

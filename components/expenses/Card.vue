@@ -2,6 +2,7 @@
 const props = defineProps<{
   count: CountData;
   expense: ExpenseData;
+  resolvedShares: number[];
   showModal: () => void;
   currentMember?: number;
 }>();
@@ -9,16 +10,6 @@ const props = defineProps<{
 const author = computed(() => {
   return props.count.members.find((m) => m.id === props.expense.authorId);
 });
-
-const resolvedShares = computed(() =>
-  splitExpense(
-    props.expense.amount,
-    props.expense.shares.map((s) => ({
-      fraction: s.fraction !== null ? s.fraction : undefined,
-      amount: s.amount !== null ? s.amount : undefined,
-    }))
-  )
-);
 
 const concerns = computed(() => {
   const concerned: MemberData[] = [];
@@ -37,7 +28,7 @@ const impact = computed(() => {
   const idx = props.expense.shares.findIndex(
     (s) => s.memberId === props.currentMember
   );
-  const selfShare = idx !== -1 ? resolvedShares.value[idx] : 0;
+  const selfShare = idx !== -1 ? props.resolvedShares[idx] : 0;
   if (props.expense.authorId === props.currentMember) {
     return props.expense.amount - selfShare;
   } else {

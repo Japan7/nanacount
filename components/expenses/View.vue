@@ -14,27 +14,31 @@ const total = computed(() =>
   props.count.expenses.reduce((acc, e) => acc + e.amount, 0)
 );
 
-const selfTotal = computed(() => {
-  return props.count.expenses.reduce((acc, e) => {
-    const resolved = splitExpense(
+const allResolvedShares = computed(() =>
+  sortedExpenses.value.map((e) =>
+    computeSharesAmount(
       e.amount,
       e.shares.map((s) => ({
         fraction: s.fraction !== null ? s.fraction : undefined,
         amount: s.amount !== null ? s.amount : undefined,
       }))
-    );
+    )
+  )
+);
 
+const selfTotal = computed(() =>
+  sortedExpenses.value.reduce((acc, e, i) => {
     const idx = e.shares.findIndex((s) => s.memberId === props.currentMember);
-    const selfShare = idx !== -1 ? resolved[idx] : 0;
+    const selfShare = idx !== -1 ? allResolvedShares.value[i][idx] : 0;
     return acc + selfShare;
-  }, 0);
-});
+  }, 0)
+);
 
 const modalRef = ref<HTMLDialogElement | null>(null);
 const supprModalRef = ref<HTMLDialogElement | null>(null);
 
-const selectedExpense = ref<ExpenseData>();
 const expenseStore = useExpenseStore();
+const selectedExpense = ref<ExpenseData>();
 
 const submit = async () => {
   const res = await $fetch(`/api/expenses/${selectedExpense.value!.id}`, {
@@ -80,14 +84,16 @@ const submitDelete = async () => {
   <div>
     <main class="pb-14 flex flex-col gap-y-2">
       <ExpensesCard
-        v-for="e in sortedExpenses"
+        v-for="(e, i) in sortedExpenses"
         :key="e.id"
         :count="count"
         :expense="e"
+        :resolved-shares="allResolvedShares[i]"
         :show-modal="() => modalRef?.showModal()"
         :current-member="currentMember"
         @click="selectedExpense = e"
       />
+
       <ExpenseModalDialog
         title="Edit Expense"
         :set-modal="(m) => (modalRef = m)"
@@ -101,6 +107,7 @@ const submitDelete = async () => {
           <TrashIcon class="h-6 w-6" />
           <span>Delete Expense</span>
         </button>
+
         <dialog ref="supprModalRef" class="modal modal-bottom sm:modal-middle">
           <div class="modal-box prose">
             <h2>Confirm</h2>
@@ -113,12 +120,14 @@ const submitDelete = async () => {
               </button>
             </div>
           </div>
+
           <form method="dialog" class="modal-backdrop">
             <button>close</button>
           </form>
         </dialog>
       </ExpenseModalDialog>
     </main>
+
     <div class="btm-nav container mx-auto p-1 gap-x-1 z-50">
       <div class="card card-compact bg-base-200 text-xs cursor-default">
         <template v-if="currentMember">
@@ -126,9 +135,11 @@ const submitDelete = async () => {
           <p class="font-bold">€{{ selfTotal.toFixed(2) }}</p>
         </template>
       </div>
+
       <div class="cursor-default">
         <NewExpenseModal :count="count" />
       </div>
+
       <div class="card card-compact bg-base-200 text-xs cursor-default">
         <h3 class="uppercase">Total Expenses</h3>
         <p class="font-bold">€{{ total.toFixed(2) }}</p>

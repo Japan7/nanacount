@@ -15,7 +15,7 @@ const updateSharesAmount = () => {
       return;
     }
   }
-  const shares = splitExpense(props.expenseAmount, formattedShares);
+  const shares = computeSharesAmount(props.expenseAmount, formattedShares);
   for (let i = 0; i < mIds.length; i++) {
     model.value[mIds[i]] = {
       fraction: model.value[mIds[i]].fraction,

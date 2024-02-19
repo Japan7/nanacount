@@ -1,5 +1,3 @@
-import { defineStore } from "pinia";
-
 export const useExpenseFormStore = defineStore("expense", () => {
   const tabId = ref(0);
   const title = ref<string>();

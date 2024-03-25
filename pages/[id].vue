@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {
+  ArrowPathIcon,
   ArrowsRightLeftIcon,
   CreditCardIcon,
-  ArrowPathIcon,
 } from "@heroicons/vue/24/solid";
 
 const route = useRoute();

@@ -18,7 +18,7 @@ const amountCurrency = ref(
 
 watchEffect(() => {
   if (amount.value) {
-    amountValue.value = parseFloat(toDecimal(amount.value));
+    amountValue.value = toFloat(amount.value);
     amountCurrency.value = toSnapshot(amount.value).currency;
   }
 });

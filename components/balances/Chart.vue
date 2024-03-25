@@ -9,7 +9,7 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
-import { isNegative, toSnapshot, type Dinero } from "dinero.js";
+import { isNegative, type Dinero } from "dinero.js";
 import { Bar } from "vue-chartjs";
 
 ChartJS.register(
@@ -32,7 +32,7 @@ const chartData = computed(() => ({
   labels: props.members.map((m) => m.name),
   datasets: [
     {
-      data: props.balances.map((v) => toSnapshot(v).amount),
+      data: props.balances.map(toFloat),
       backgroundColor: props.balances.map((v) =>
         isNegative(v) ? "rgba(255, 99, 132, 0.2)" : "rgba(75, 192, 192, 0.2)"
       ),

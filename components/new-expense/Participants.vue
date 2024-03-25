@@ -29,7 +29,7 @@ const updateSharesAmount = () => {
   for (let i = 0; i < mIds.length; i++) {
     const amount = shares[i];
     model.value[mIds[i]].amount = amount;
-    floatSharesAmount.value.set(mIds[i], parseFloat(toDecimal(amount)));
+    floatSharesAmount.value.set(mIds[i], toFloat(amount));
   }
 };
 updateSharesAmount();

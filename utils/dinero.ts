@@ -14,6 +14,10 @@ export function fromFloat(
   return dinero({ amount, currency });
 }
 
+export function toFloat(amount: Dinero<number>): number {
+  return parseFloat(toDecimal(amount));
+}
+
 export function toString(amount: Dinero<number>): string {
   return toDecimal(
     amount,

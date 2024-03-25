@@ -1,4 +1,3 @@
-import { EUR } from "@dinero.js/currencies";
 import {
   add,
   allocate,
@@ -8,6 +7,7 @@ import {
   minimum,
   multiply,
   subtract,
+  type Currency,
   type Dinero,
 } from "dinero.js";
 
@@ -33,7 +33,8 @@ export function computeSharesAmount(
 
 export function computeBalances(
   expenses: ExpenseData[],
-  members: MemberData[]
+  members: MemberData[],
+  countCurrency: Currency<number>
 ): Dinero<number>[] {
   const resolved = expenses.map((e) => {
     return computeSharesAmount(
@@ -51,13 +52,13 @@ export function computeBalances(
   return members.map((m) =>
     expenses.reduce((acc, e, i) => {
       const idx = e.shares.findIndex((s) => s.memberId === m.id);
-      const share = idx !== -1 ? resolved[i][idx] : zero(EUR);
+      const share = idx !== -1 ? resolved[i][idx] : zero(countCurrency);
       if (e.authorId === m.id) {
         return add(acc, subtract(dinero(JSON.parse(e.amount)), share));
       } else {
         return subtract(acc, share);
       }
-    }, zero(EUR))
+    }, zero(countCurrency))
   );
 }
 

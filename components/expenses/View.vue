@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { EUR } from "@dinero.js/currencies";
 import { TrashIcon } from "@heroicons/vue/24/solid";
 import { add, dinero } from "dinero.js";
 
 const props = defineProps<{ count: CountData; currentMember?: number }>();
+
+const countCurrency = computed(() => JSON.parse(props.count.currency));
 
 const sortedExpenses = computed(() =>
   props.count.expenses.sort(
@@ -15,7 +16,7 @@ const sortedExpenses = computed(() =>
 const total = computed(() =>
   props.count.expenses.reduce(
     (acc, e) => add(acc, dinero(JSON.parse(e.amount))),
-    zero(EUR)
+    zero(countCurrency.value)
   )
 );
 
@@ -37,9 +38,10 @@ const allResolvedShares = computed(() =>
 const selfTotal = computed(() =>
   sortedExpenses.value.reduce((acc, e, i) => {
     const idx = e.shares.findIndex((s) => s.memberId === props.currentMember);
-    const selfShare = idx !== -1 ? allResolvedShares.value[i][idx] : zero(EUR);
+    const selfShare =
+      idx !== -1 ? allResolvedShares.value[i][idx] : zero(countCurrency.value);
     return add(acc, selfShare);
-  }, zero(EUR))
+  }, zero(countCurrency.value))
 );
 
 const modalRef = ref<HTMLDialogElement | null>(null);

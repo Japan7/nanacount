@@ -1,9 +1,11 @@
+import { EUR } from "@dinero.js/currencies";
+import type { Currency } from "dinero.js";
 import _ from "lodash";
 
 export const useCountFormStore = defineStore("count-form", () => {
   const title = ref<string>();
   const description = ref<string>();
-  const currency = ref("EUR");
+  const currency = ref<Currency<number>>(EUR);
   const members = ref<string>();
 
   const membersArray = computed(() =>
@@ -15,14 +17,14 @@ export const useCountFormStore = defineStore("count-form", () => {
   function $reset() {
     title.value = undefined;
     description.value = undefined;
-    currency.value = "EUR";
+    currency.value = EUR;
     members.value = undefined;
   }
 
   function load(count: CountData) {
     title.value = count.title;
     description.value = count.description ?? undefined;
-    currency.value = count.currency ?? "EUR";
+    currency.value = JSON.parse(count.currency);
     members.value = count.members.map((m) => m.name).join("\n");
   }
 

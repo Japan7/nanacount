@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   const data: Prisma.CountUpdateInput = {
     title,
     description,
-    currency,
+    currency: JSON.stringify(currency),
     members: {
       connectOrCreate: members.map((name: string) => ({
         create: { name },

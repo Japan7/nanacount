@@ -1,3 +1,4 @@
+import * as currencies from "@dinero.js/currencies";
 import { dinero, toDecimal, type Currency, type Dinero } from "dinero.js";
 
 export function zero(currency: Currency<number>): Dinero<number> {
@@ -18,4 +19,14 @@ export function toString(amount: Dinero<number>): string {
     amount,
     ({ value, currency }) => `${currency.code} ${value}`
   );
+}
+
+export const currencyRecord: Record<
+  Currency<number>["code"],
+  Currency<number>
+> = {};
+for (const currency of Object.values(currencies)) {
+  if (currency.code) {
+    currencyRecord[currency.code] = currency;
+  }
 }

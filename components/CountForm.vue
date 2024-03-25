@@ -3,7 +3,7 @@ import { EUR } from "@dinero.js/currencies";
 
 const title = defineModel("title");
 const description = defineModel("description", { default: "" });
-const currency = defineModel("currency", { default: "EUR" });
+const currency = defineModel("currency", { default: EUR });
 const members = defineModel("members", { default: "" });
 </script>
 
@@ -26,8 +26,14 @@ const members = defineModel("members", { default: "" });
       <div class="label">
         <span class="label-text">Currency</span>
       </div>
-      <select class="select select-bordered" disabled v-model="currency">
-        <option disabled value="EUR">{{ EUR.code }}</option>
+      <select v-model="currency" class="select select-bordered" disabled>
+        <option
+          v-for="[code, curr] in Object.entries(currencyRecord)"
+          :key="code"
+          :value="curr"
+        >
+          {{ code }}
+        </option>
       </select>
     </label>
 

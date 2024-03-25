@@ -1,8 +1,16 @@
 <script setup lang="ts">
 const props = defineProps<{ count: CountData; currentMember?: number }>();
 
+const countCurrency = computed(() => JSON.parse(props.count.currency));
+
 const balances = computed(() =>
-  props.count ? computeBalances(props.count.expenses, props.count.members) : []
+  props.count
+    ? computeBalances(
+        props.count.expenses,
+        props.count.members,
+        countCurrency.value
+      )
+    : []
 );
 
 const checkbox = ref(false);

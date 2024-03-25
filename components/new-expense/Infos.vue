@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { EUR } from "@dinero.js/currencies";
-import { toDecimal, type Dinero } from "dinero.js";
+import { toDecimal, toSnapshot, type Dinero } from "dinero.js";
 
-defineProps<{ count: CountData }>();
+const props = defineProps<{ count: CountData }>();
 
 const title = defineModel<string>("title");
 const description = defineModel<string>("description");
@@ -10,13 +9,18 @@ const amount = defineModel<Dinero<number>>("amount");
 const date = defineModel<string>("date");
 const author = defineModel<number>("author");
 
-const computedAmount = computed({
-  get() {
-    return amount.value ? parseFloat(toDecimal(amount.value)) : undefined;
-  },
-  set(newValue) {
-    amount.value = newValue ? fromFloat(newValue, EUR) : undefined;
-  },
+const amountValue = ref(0);
+const amountCurrency = ref(
+  amount.value
+    ? toSnapshot(amount.value).currency
+    : JSON.parse(props.count.currency)
+);
+
+watchEffect(() => {
+  if (amount.value) {
+    amountValue.value = parseFloat(toDecimal(amount.value));
+    amountCurrency.value = toSnapshot(amount.value).currency;
+  }
 });
 </script>
 
@@ -40,9 +44,16 @@ const computedAmount = computed({
         type="number"
         placeholder="Amount"
         class="input input-bordered w-full"
-        v-model="computedAmount"
+        :value="amountValue"
+        @input="
+          (ev) => {
+            const amount = (ev.target as HTMLInputElement).valueAsNumber;
+            amountValue = amount;
+          }
+        "
+        @focusout="amount = fromFloat(amountValue, amountCurrency)"
       />
-      <span class="text-xl">{{ EUR.code }}</span>
+      <span class="text-xl">{{ amountCurrency.code }}</span>
     </div>
 
     <label class="form-control w-full">

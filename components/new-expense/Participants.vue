@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { EUR } from "@dinero.js/currencies";
-import { isPositive, toDecimal, type Dinero } from "dinero.js";
+import { isPositive, toDecimal, toSnapshot, type Dinero } from "dinero.js";
 
 const props = defineProps<{
   count: CountData;
   expenseAmount: Dinero<number>;
 }>();
 const model = defineModel<ExpenseShares>({ default: {} });
+
+const expenseCurrency = computed(
+  () => toSnapshot(props.expenseAmount).currency
+);
 
 const floatSharesAmount = ref<Map<number, number | undefined>>(new Map());
 
@@ -120,14 +123,17 @@ const isEveryoneConcerned = computed(() =>
                 () => {
                   const input = floatSharesAmount.get(m.id);
                   model[m.id] = input
-                    ? { fraction: undefined, amount: fromFloat(input, EUR) }
+                    ? {
+                        fraction: undefined,
+                        amount: fromFloat(input, expenseCurrency),
+                      }
                     : { fraction: 1 };
                   updateSharesAmount();
                 }
               "
             />
           </td>
-          <td class="w-0 pl-0">{{ EUR.code }}</td>
+          <td class="w-0 pl-0">{{ expenseCurrency.code }}</td>
         </tr>
       </tbody>
     </table>

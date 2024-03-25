@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   const data: Prisma.CountCreateInput = {
     title,
     description,
-    currency,
+    currency: JSON.stringify(currency),
     members: {
       create: members.map((name: string) => ({ name })),
     },

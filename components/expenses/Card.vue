@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { EUR } from "@dinero.js/currencies";
 import {
   dinero,
   isNegative,
   isPositive,
   multiply,
   subtract,
+  toSnapshot,
   type Dinero,
 } from "dinero.js";
 
@@ -35,12 +35,16 @@ const concerns = computed(() => {
 });
 
 const expenseAmount = computed(() => dinero(JSON.parse(props.expense.amount)));
+const expenseCurrency = computed(
+  () => toSnapshot(expenseAmount.value).currency
+);
 
 const impact = computed(() => {
   const idx = props.expense.shares.findIndex(
     (s) => s.memberId === props.currentMember
   );
-  const selfShare = idx !== -1 ? props.resolvedShares[idx] : zero(EUR);
+  const selfShare =
+    idx !== -1 ? props.resolvedShares[idx] : zero(expenseCurrency.value);
   if (props.expense.authorId === props.currentMember) {
     return subtract(expenseAmount.value, selfShare);
   } else {

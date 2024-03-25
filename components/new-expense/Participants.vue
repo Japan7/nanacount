@@ -1,29 +1,44 @@
 <script setup lang="ts">
-const props = defineProps<{ count: CountData; expenseAmount: number }>();
+import { EUR } from "@dinero.js/currencies";
+import { isPositive, toDecimal, type Dinero } from "dinero.js";
+
+const props = defineProps<{
+  count: CountData;
+  expenseAmount: Dinero<number>;
+}>();
 const model = defineModel<ExpenseShares>({ default: {} });
 
+const floatSharesAmount = ref<Map<number, number | undefined>>(new Map());
+
 const updateSharesAmount = () => {
-  const formattedShares: { fraction?: number; amount?: number }[] = [];
+  const formattedShares: ExpenseShares[number][] = [];
   const mIds = props.count.members.map((m) => m.id);
   for (const id of mIds) {
     const share = model.value[id];
-    if (share.amount !== "" && share.fraction === "") {
-      formattedShares.push({ amount: share.amount });
-    } else if (share.fraction !== "") {
+    if (share.fraction !== undefined) {
       formattedShares.push({ fraction: share.fraction });
     } else {
-      return;
+      formattedShares.push({ fraction: undefined, amount: share.amount });
     }
   }
   const shares = computeSharesAmount(props.expenseAmount, formattedShares);
+  floatSharesAmount.value.clear();
   for (let i = 0; i < mIds.length; i++) {
-    model.value[mIds[i]] = {
-      fraction: model.value[mIds[i]].fraction,
-      amount: shares[i],
-    };
+    const amount = shares[i];
+    model.value[mIds[i]].amount = amount;
+    floatSharesAmount.value.set(mIds[i], parseFloat(toDecimal(amount)));
   }
 };
 updateSharesAmount();
+
+const memberIsConcerned = (m: MemberData) => {
+  const { fraction, amount } = model.value[m.id];
+  return fraction || (amount && isPositive(amount));
+};
+
+const isEveryoneConcerned = computed(() =>
+  props.count.members.every(memberIsConcerned)
+);
 </script>
 
 <template>
@@ -36,25 +51,17 @@ updateSharesAmount();
               <input
                 type="checkbox"
                 class="checkbox"
-                :checked="
-                  count.members.every(
-                    (m) => model[m.id].fraction || model[m.id].amount
-                  )
-                "
+                :checked="isEveryoneConcerned"
                 @click="
                   () => {
-                    if (
-                      count.members.every(
-                        (m) => model[m.id].fraction || model[m.id].amount
-                      )
-                    ) {
+                    if (isEveryoneConcerned) {
                       for (const m of count.members) {
-                        model[m.id] = { fraction: 0, amount: '' };
+                        model[m.id] = { fraction: 0 };
                       }
                     } else {
                       for (const m of count.members) {
-                        if (!(model[m.id].fraction || model[m.id].amount))
-                          model[m.id] = { fraction: 1, amount: '' };
+                        if (!memberIsConcerned(m))
+                          model[m.id] = { fraction: 1 };
                       }
                     }
                     updateSharesAmount();
@@ -78,11 +85,9 @@ updateSharesAmount();
                 :checked="model[m.id].fraction !== 0"
                 @click="
                   () => {
-                    if (model[m.id].fraction || model[m.id].amount)
-                      model[m.id] = { fraction: 0, amount: '' };
-                    else {
-                      model[m.id] = { fraction: 1, amount: '' };
-                    }
+                    model[m.id] = memberIsConcerned(m)
+                      ? { fraction: 0 }
+                      : { fraction: 1 };
                     updateSharesAmount();
                   }
                 "
@@ -93,39 +98,36 @@ updateSharesAmount();
           <td>
             <input
               type="number"
+              min="0"
+              step="1"
               class="input input-bordered input-sm w-full"
               v-model="model[m.id].fraction"
-              @input="
-                () => {
-                  if (model[m.id].fraction !== '') {
-                    model[m.id].amount = '';
-                  } else {
-                    model[m.id].fraction = 0;
-                    model[m.id].amount = '';
-                  }
-                  updateSharesAmount();
-                }
-              "
+              @input="updateSharesAmount()"
             />
           </td>
           <td>
             <input
               type="number"
               class="input input-bordered input-sm w-full text-right"
-              v-model="model[m.id].amount"
+              :value="floatSharesAmount.get(m.id)"
               @input="
+                (ev) => {
+                  const amount = (ev.target as HTMLInputElement).valueAsNumber;
+                  floatSharesAmount.set(m.id, amount);
+                }
+              "
+              @focusout="
                 () => {
-                  if (model[m.id].amount !== '') {
-                    model[m.id].fraction = '';
-                  } else {
-                    model[m.id].fraction = 0;
-                  }
+                  const input = floatSharesAmount.get(m.id);
+                  model[m.id] = input
+                    ? { fraction: undefined, amount: fromFloat(input, EUR) }
+                    : { fraction: 1 };
                   updateSharesAmount();
                 }
               "
             />
           </td>
-          <td class="w-0 pl-0">€</td>
+          <td class="w-0 pl-0">{{ EUR.code }}</td>
         </tr>
       </tbody>
     </table>

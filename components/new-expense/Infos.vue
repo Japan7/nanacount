@@ -1,11 +1,23 @@
 <script setup lang="ts">
+import { EUR } from "@dinero.js/currencies";
+import { toDecimal, type Dinero } from "dinero.js";
+
 defineProps<{ count: CountData }>();
 
 const title = defineModel<string>("title");
 const description = defineModel<string>("description");
-const amount = defineModel<number>("amount");
+const amount = defineModel<Dinero<number>>("amount");
 const date = defineModel<string>("date");
 const author = defineModel<number>("author");
+
+const computedAmount = computed({
+  get() {
+    return amount.value ? parseFloat(toDecimal(amount.value)) : undefined;
+  },
+  set(newValue) {
+    amount.value = newValue ? fromFloat(newValue, EUR) : undefined;
+  },
+});
 </script>
 
 <template>
@@ -28,9 +40,9 @@ const author = defineModel<number>("author");
         type="number"
         placeholder="Amount"
         class="input input-bordered w-full"
-        v-model="amount"
+        v-model="computedAmount"
       />
-      <span class="text-xl">€</span>
+      <span class="text-xl">{{ EUR.code }}</span>
     </div>
 
     <label class="form-control w-full">

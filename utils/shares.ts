@@ -1,92 +1,76 @@
+import { EUR } from "@dinero.js/currencies";
+import {
+  add,
+  allocate,
+  dinero,
+  isNegative,
+  isPositive,
+  minimum,
+  multiply,
+  subtract,
+  type Dinero,
+} from "dinero.js";
+
 export function computeSharesAmount(
-  amount: number,
-  shares: { fraction?: number; amount?: number }[]
-): number[] {
+  amount: Dinero<number>,
+  shares: ExpenseShares[number][]
+): Dinero<number>[] {
   let left = amount;
-  let nparts = 0;
-  const resolved: (number | undefined)[] = new Array(shares.length).fill(
-    undefined
+  for (const share of shares) {
+    if (share.fraction === undefined) {
+      left = subtract(left, share.amount);
+    }
+  }
+  const allocations = allocate(
+    left,
+    shares.map((s) => s.fraction || 0)
   );
-
-  // Apply custom amounts
   for (let idx = 0; idx < shares.length; idx++) {
-    const share = shares[idx];
-    if (share.amount !== undefined && share.fraction === undefined) {
-      resolved[idx] = share.amount;
-      left -= share.amount;
-    } else if (share.fraction !== undefined) {
-      nparts += share.fraction;
-    } else {
-      throw new Error("Invalid share");
-    }
+    allocations[idx] = shares[idx].amount ?? allocations[idx];
   }
-
-  // Apply fractions
-  for (let idx = 0; idx < shares.length; idx++) {
-    if (resolved[idx] === undefined) {
-      const share = shares[idx];
-
-      let amount: number;
-      if (share.fraction === undefined) {
-        throw new Error("Invalid share");
-      } else if (share.fraction === 0) {
-        amount = 0;
-      } else {
-        amount = share.fraction * (left / nparts);
-        if (amount < 0) {
-          amount = 0;
-        } else if (amount > left) {
-          amount = left;
-        } else {
-          amount = Math.ceil(amount * 100) / 100;
-        }
-      }
-
-      resolved[idx] = amount;
-      left -= amount;
-      nparts -= share.fraction;
-    }
-  }
-
-  return resolved as number[];
+  return allocations;
 }
 
 export function computeBalances(
   expenses: ExpenseData[],
   members: MemberData[]
-) {
-  const resolved = expenses.map((e) =>
-    computeSharesAmount(
-      e.amount,
-      e.shares.map((s) => ({
-        fraction: s.fraction !== null ? s.fraction : undefined,
-        amount: s.amount !== null ? s.amount : undefined,
-      }))
-    )
-  );
+): Dinero<number>[] {
+  const resolved = expenses.map((e) => {
+    return computeSharesAmount(
+      dinero(JSON.parse(e.amount)),
+      e.shares.map(
+        (s) =>
+          ({
+            fraction: s.fraction !== null ? s.fraction : undefined,
+            amount: s.amount ? dinero(JSON.parse(s.amount)) : undefined,
+          } as ExpenseShares[number])
+      )
+    );
+  });
+
   return members.map((m) =>
     expenses.reduce((acc, e, i) => {
       const idx = e.shares.findIndex((s) => s.memberId === m.id);
-      const share = idx !== -1 ? resolved[i][idx] : 0;
+      const share = idx !== -1 ? resolved[i][idx] : zero(EUR);
       if (e.authorId === m.id) {
-        return acc + (e.amount - share);
+        return add(acc, subtract(dinero(JSON.parse(e.amount)), share));
       } else {
-        return acc - share;
+        return subtract(acc, share);
       }
-    }, 0)
+    }, zero(EUR))
   );
 }
 
 export function computeReimbursments(
   members: MemberData[],
-  inputBalances: number[]
-) {
+  inputBalances: Dinero<number>[]
+): Reimbursment[] {
   const balances = [...inputBalances];
-  const reimb: { from: MemberData; to: MemberData; amount: number }[] = [];
+  const reimb: Reimbursment[] = [];
 
   for (let i = 0; i < balances.length; i++) {
-    while (balances[i] <= -0.01) {
-      const j = balances.findIndex((v) => v >= 0.01);
+    while (isNegative(balances[i])) {
+      const j = balances.findIndex((v) => isPositive(v));
       if (j === -1) {
         if (i === balances.length - 1) {
           break;
@@ -94,10 +78,9 @@ export function computeReimbursments(
           throw new Error("No positive balance found");
         }
       }
-      let amount = Math.min(-balances[i], balances[j]);
-      amount = Math.ceil(amount * 100) / 100;
-      balances[i] += amount;
-      balances[j] -= amount;
+      const amount = minimum([multiply(balances[i], -1), balances[j]]);
+      balances[i] = add(balances[i], amount);
+      balances[j] = subtract(balances[j], amount);
       reimb.push({
         from: members[i],
         to: members[j],

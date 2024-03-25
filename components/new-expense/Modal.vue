@@ -22,10 +22,10 @@ const submit = async () => {
       authorId: expenseFormStore.author,
       // FIXME: this is really ugly
       shares: Object.entries(expenseFormStore.shares)
-        .map(([memberId, share]) => ({
+        .map(([memberId, share]: [string, ExpenseShares[number]]) => ({
           memberId: parseInt(memberId),
-          fraction: share.fraction !== "" ? share.fraction : undefined,
-          amount: share.fraction === "" ? share.amount : undefined,
+          fraction: share.fraction,
+          amount: share.fraction === undefined ? share.amount : undefined,
         }))
         .filter((s) => s.fraction || s.amount),
     }),
@@ -44,7 +44,7 @@ const submit = async () => {
       () => {
         expenseFormStore.$reset();
         for (const m of count.members ?? []) {
-          expenseFormStore.shares[m.id] = { fraction: 1, amount: '' };
+          expenseFormStore.shares[m.id] = { fraction: 1 };
         }
         modalRef?.showModal();
       }

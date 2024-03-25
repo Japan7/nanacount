@@ -1,8 +1,18 @@
 <script setup lang="ts">
+import { EUR } from "@dinero.js/currencies";
+import {
+  dinero,
+  isNegative,
+  isPositive,
+  multiply,
+  subtract,
+  type Dinero,
+} from "dinero.js";
+
 const props = defineProps<{
   count: CountData;
   expense: ExpenseData;
-  resolvedShares: number[];
+  resolvedShares: Dinero<number>[];
   showModal: () => void;
   currentMember?: number;
 }>();
@@ -24,15 +34,17 @@ const concerns = computed(() => {
   return [concerned, notConcerned] as const;
 });
 
+const expenseAmount = computed(() => dinero(JSON.parse(props.expense.amount)));
+
 const impact = computed(() => {
   const idx = props.expense.shares.findIndex(
     (s) => s.memberId === props.currentMember
   );
-  const selfShare = idx !== -1 ? props.resolvedShares[idx] : 0;
+  const selfShare = idx !== -1 ? props.resolvedShares[idx] : zero(EUR);
   if (props.expense.authorId === props.currentMember) {
-    return props.expense.amount - selfShare;
+    return subtract(expenseAmount.value, selfShare);
   } else {
-    return -selfShare;
+    return multiply(selfShare, -1);
   }
 });
 
@@ -47,7 +59,7 @@ const expenseFormStore = useExpenseFormStore();
       () => {
         expenseFormStore.$reset();
         for (const m of count.members ?? []) {
-          expenseFormStore.shares[m.id] = { fraction: 0, amount: '' };
+          expenseFormStore.shares[m.id] = { fraction: 0 };
         }
         expenseFormStore.load(expense);
         showModal();
@@ -57,7 +69,7 @@ const expenseFormStore = useExpenseFormStore();
     <div class="card-body gap-y-0">
       <h2 class="card-title text-primary">
         <span class="flex-1">{{ expense.title }}</span>
-        <span>€{{ expense.amount.toFixed(2) }}</span>
+        <span>{{ toString(expenseAmount) }}</span>
       </h2>
 
       <p class="flex">
@@ -86,13 +98,11 @@ const expenseFormStore = useExpenseFormStore();
           Impact on my balance:
           <span
             :class="{
-              'text-red-500': impact < 0,
-              'text-green-500': impact > 0,
+              'text-red-500': isNegative(impact),
+              'text-green-500': isPositive(impact),
             }"
           >
-            {{ impact < 0 ? "-" : impact > 0 ? "+" : "" }}€{{
-              Math.abs(impact).toFixed(2)
-            }}
+            {{ toString(impact) }}
           </span>
         </p>
       </div>

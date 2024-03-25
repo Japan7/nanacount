@@ -11,14 +11,14 @@ export default defineEventHandler(async (event) => {
     count: { connect: { id: countId } },
     title,
     description,
-    amount,
+    amount: JSON.stringify(amount),
     date,
     author: { connect: { id: authorId } },
     shares: {
       create: shares.map(({ memberId, fraction, amount }: any) => ({
         member: { connect: { id: memberId } },
         fraction,
-        amount,
+        amount: JSON.stringify(amount),
       })),
     },
   };

@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { EUR } from "@dinero.js/currencies";
 import { TrashIcon } from "@heroicons/vue/24/solid";
+import { add, dinero } from "dinero.js";
 
 const props = defineProps<{ count: CountData; currentMember?: number }>();
 
@@ -11,17 +13,23 @@ const sortedExpenses = computed(() =>
 );
 
 const total = computed(() =>
-  props.count.expenses.reduce((acc, e) => acc + e.amount, 0)
+  props.count.expenses.reduce(
+    (acc, e) => add(acc, dinero(JSON.parse(e.amount))),
+    zero(EUR)
+  )
 );
 
 const allResolvedShares = computed(() =>
   sortedExpenses.value.map((e) =>
     computeSharesAmount(
-      e.amount,
-      e.shares.map((s) => ({
-        fraction: s.fraction !== null ? s.fraction : undefined,
-        amount: s.amount !== null ? s.amount : undefined,
-      }))
+      dinero(JSON.parse(e.amount)),
+      e.shares.map(
+        (s) =>
+          ({
+            fraction: s.fraction !== null ? s.fraction : undefined,
+            amount: s.amount ? dinero(JSON.parse(s.amount)) : undefined,
+          } as ExpenseShares[number])
+      )
     )
   )
 );
@@ -29,9 +37,9 @@ const allResolvedShares = computed(() =>
 const selfTotal = computed(() =>
   sortedExpenses.value.reduce((acc, e, i) => {
     const idx = e.shares.findIndex((s) => s.memberId === props.currentMember);
-    const selfShare = idx !== -1 ? allResolvedShares.value[i][idx] : 0;
-    return acc + selfShare;
-  }, 0)
+    const selfShare = idx !== -1 ? allResolvedShares.value[i][idx] : zero(EUR);
+    return add(acc, selfShare);
+  }, zero(EUR))
 );
 
 const modalRef = ref<HTMLDialogElement | null>(null);
@@ -55,10 +63,10 @@ const submit = async () => {
       authorId: expenseFormStore.author,
       // FIXME: this is really ugly
       shares: Object.entries(expenseFormStore.shares)
-        .map(([memberId, share]) => ({
+        .map(([memberId, share]: [string, ExpenseShares[number]]) => ({
           memberId: parseInt(memberId),
-          fraction: share.fraction !== "" ? share.fraction : undefined,
-          amount: share.fraction === "" ? share.amount : undefined,
+          fraction: share.fraction,
+          amount: share.fraction === undefined ? share.amount : undefined,
         }))
         .filter((s) => s.fraction || s.amount),
     }),
@@ -132,7 +140,9 @@ const submitDelete = async () => {
       <div class="card card-compact bg-base-200 text-xs cursor-default">
         <template v-if="currentMember">
           <h3 class="uppercase">My Total</h3>
-          <p class="font-bold">€{{ selfTotal.toFixed(2) }}</p>
+          <p class="font-bold">
+            {{ toString(selfTotal) }}
+          </p>
         </template>
       </div>
 
@@ -142,7 +152,9 @@ const submitDelete = async () => {
 
       <div class="card card-compact bg-base-200 text-xs cursor-default">
         <h3 class="uppercase">Total Expenses</h3>
-        <p class="font-bold">€{{ total.toFixed(2) }}</p>
+        <p class="font-bold">
+          {{ toString(total) }}
+        </p>
       </div>
     </div>
   </div>

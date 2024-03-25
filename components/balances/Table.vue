@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { CheckIcon } from "@heroicons/vue/24/solid";
+import type { Dinero } from "dinero.js";
 
 const props = defineProps<{
   count: CountData;
   members: MemberData[];
-  balances: number[];
+  balances: Dinero<number>[];
   currentMember?: number;
 }>();
 
@@ -16,7 +17,7 @@ const modalRef = ref<HTMLDialogElement | null>(null);
 const selectedReimb = ref<{
   from: MemberData;
   to: MemberData;
-  amount: number;
+  amount: Dinero<number>;
 }>();
 
 const submit = async () => {
@@ -55,7 +56,9 @@ const submit = async () => {
             <td class="font-bold text-right">{{ r.from.name }}</td>
             <td class="w-0 text-center">owes</td>
             <td class="font-bold text-left">{{ r.to.name }}</td>
-            <td class="text-primary text-center">€{{ r.amount.toFixed(2) }}</td>
+            <td class="text-primary text-center">
+              {{ toString(r.amount) }}
+            </td>
             <td class="w-0 text-right">
               <button
                 class="btn btn-sm btn-success"
@@ -82,9 +85,9 @@ const submit = async () => {
           From <b>{{ selectedReimb?.from.name }}</b> to
           <b>{{ selectedReimb?.to.name }}</b
           >,
-          <span class="text-primary"
-            >€{{ selectedReimb?.amount.toFixed(2) }}</span
-          >
+          <span class="text-primary">
+            {{ selectedReimb ? toString(selectedReimb.amount) : "" }}
+          </span>
         </p>
 
         <div class="modal-action">

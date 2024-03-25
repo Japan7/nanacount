@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { EUR } from "@dinero.js/currencies";
 import { DocumentTextIcon, UserGroupIcon } from "@heroicons/vue/24/solid";
 
 const props = defineProps<{
@@ -56,7 +57,7 @@ watchEffect(() => props.setModal(modalRef.value));
         v-else-if="expenseFormStore.tabId === 1"
         v-model="expenseFormStore.shares"
         :count="count"
-        :expense-amount="expenseFormStore.amount ?? 0"
+        :expense-amount="expenseFormStore.amount ?? zero(EUR)"
       />
 
       <div class="modal-action">

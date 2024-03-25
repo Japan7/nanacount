@@ -34,7 +34,7 @@ model Expense {
   id          Int      @id @default(autoincrement())
   title       String
   description String?
-  amount      Float
+  amount      String
   date        DateTime
   author      Member   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId    Int
@@ -48,7 +48,7 @@ model Share {
   member    Member  @relation(fields: [memberId], references: [id], onDelete: Cascade)
   memberId  Int
   fraction  Float?
-  amount    Float?
+  amount    String?
   expense   Expense @relation(fields: [expenseId], references: [id], onDelete: Cascade)
   expenseId Int
 

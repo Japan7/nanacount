@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { EUR } from "@dinero.js/currencies";
+
 const title = defineModel("title");
 const description = defineModel("description", { default: "" });
 const currency = defineModel("currency", { default: "EUR" });
@@ -25,7 +27,7 @@ const members = defineModel("members", { default: "" });
         <span class="label-text">Currency</span>
       </div>
       <select class="select select-bordered" disabled v-model="currency">
-        <option disabled value="EUR">EUR</option>
+        <option disabled value="EUR">{{ EUR.code }}</option>
       </select>
     </label>
 

@@ -29,12 +29,10 @@ watchEffect(() => {
 
 const tabId = ref(0);
 
-const currentMemberStr = useCookie(`${countId}_currentMember`);
-currentMemberStr.value = currentMemberStr.value ?? "";
-const currentMember = computed(() => {
-  const id = currentMemberStr.value;
-  return id ? parseInt(id) : undefined;
-});
+const currentMemberStr = useLocalStorage(`${countId}_currentMember`, "");
+const currentMember = computed(() =>
+  currentMemberStr.value ? parseInt(currentMemberStr.value) : undefined
+);
 </script>
 
 <template>

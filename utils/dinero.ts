@@ -25,12 +25,6 @@ export function toString(amount: Dinero<number>): string {
   );
 }
 
-export const currencyRecord: Record<
-  Currency<number>["code"],
-  Currency<number>
-> = {};
-for (const currency of Object.values(currencies)) {
-  if (currency.code) {
-    currencyRecord[currency.code] = currency;
-  }
-}
+export const currencyRecord = Object.fromEntries(
+  Object.values(currencies).map((currency) => [currency.code, currency])
+);

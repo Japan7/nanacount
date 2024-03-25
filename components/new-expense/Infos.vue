@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toDecimal, toSnapshot, type Dinero } from "dinero.js";
+import { toSnapshot, type Dinero, type Currency } from "dinero.js";
 
 const props = defineProps<{ count: CountData }>();
 
@@ -10,7 +10,7 @@ const date = defineModel<string>("date");
 const author = defineModel<number>("author");
 
 const amountValue = ref(0);
-const amountCurrency = ref(
+const amountCurrency = ref<Currency<number>>(
   amount.value
     ? toSnapshot(amount.value).currency
     : JSON.parse(props.count.currency)
@@ -53,7 +53,15 @@ watchEffect(() => {
         "
         @focusout="amount = fromFloat(amountValue, amountCurrency)"
       />
-      <span class="text-xl">{{ amountCurrency.code }}</span>
+      <select v-model="amountCurrency" class="select select-bordered" disabled>
+        <option
+          v-for="[code, curr] in Object.entries(currencyRecord)"
+          :key="code"
+          :value="curr"
+        >
+          {{ code }}
+        </option>
+      </select>
     </div>
 
     <label class="form-control w-full">

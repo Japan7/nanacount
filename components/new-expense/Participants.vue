@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { isPositive, toDecimal, toSnapshot, type Dinero } from "dinero.js";
+import { isPositive, toSnapshot, type Dinero } from "dinero.js";
 
 const props = defineProps<{
   count: CountData;

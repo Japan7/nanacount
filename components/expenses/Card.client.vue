@@ -80,12 +80,14 @@ const expenseFormStore = useExpenseFormStore();
         <span class="flex-1"
           >Paid by <b>{{ author?.name }}</b></span
         >
-        <span>{{
-          new Date(expense.date).toLocaleDateString(undefined, {
-            timeZone: "UTC",
-            dateStyle: "long",
-          })
-        }}</span>
+        <span>
+          {{
+            new Date(expense.date).toLocaleDateString(undefined, {
+              timeZone: "UTC",
+              dateStyle: "long",
+            })
+          }}
+        </span>
       </p>
 
       <div class="flex flex-col sm:flex-row text-xs">

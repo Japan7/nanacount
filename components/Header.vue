@@ -57,6 +57,7 @@ const submit = async () => {
         v-model:description="countFormStore.description"
         v-model:currency="countFormStore.currency"
         v-model:members="countFormStore.members"
+        :disable-currency-select="true"
       />
 
       <div class="modal-action">

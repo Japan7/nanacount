@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { EUR } from "@dinero.js/currencies";
 
+defineProps<{ disableCurrencySelect?: boolean }>();
+
 const title = defineModel("title");
 const description = defineModel("description", { default: "" });
 const currency = defineModel("currency", { default: EUR });
@@ -26,7 +28,11 @@ const members = defineModel("members", { default: "" });
       <div class="label">
         <span class="label-text">Currency</span>
       </div>
-      <select v-model="currency" class="select select-bordered" disabled>
+      <select
+        v-model="currency"
+        class="select select-bordered"
+        :disabled="disableCurrencySelect"
+      >
         <option
           v-for="[code, curr] in Object.entries(currencyRecord)"
           :key="code"

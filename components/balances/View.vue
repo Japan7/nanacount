@@ -22,11 +22,7 @@ const checkbox = ref(false);
       <input v-model="checkbox" type="checkbox" />
       <div class="collapse-title card-title">Balance Chart</div>
       <div v-if="checkbox" class="collapse-content h-fit">
-        <BalancesChart
-          :members="count.members"
-          :balances="balances"
-          :current-member="currentMember"
-        />
+        <BalancesChart :members="count.members" :balances="balances" />
       </div>
     </div>
 

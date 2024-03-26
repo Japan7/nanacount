@@ -25,7 +25,6 @@ ChartJS.register(
 const props = defineProps<{
   members: MemberData[];
   balances: Dinero<number>[];
-  currentMember?: number;
 }>();
 
 const chartData = computed(() => ({

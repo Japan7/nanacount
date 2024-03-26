@@ -77,7 +77,7 @@ const currentMember = computed(() =>
     </div>
 
     <div class="lg:grid grid-cols-2 gap-4">
-      <ExpensesView
+      <ExpenseListView
         class="lg:block"
         :class="{ hidden: tabId !== 0 }"
         :count="data"

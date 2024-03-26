@@ -111,7 +111,7 @@ const submitDelete = async () => {
 <template>
   <div>
     <main class="pb-14 flex flex-col gap-y-2">
-      <ExpensesCard
+      <ExpenseListCard
         v-for="(e, i) in sortedExpenses"
         :key="e.id"
         :count="count"
@@ -167,7 +167,7 @@ const submitDelete = async () => {
       </div>
 
       <div class="cursor-default">
-        <NewExpenseModal :count="count" :current-member="currentMember" />
+        <ExpenseModal :count="count" :current-member="currentMember" />
       </div>
 
       <div class="card card-compact bg-base-200 text-xs cursor-default">

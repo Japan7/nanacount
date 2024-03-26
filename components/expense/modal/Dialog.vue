@@ -44,7 +44,7 @@ watchEffect(() => props.setModal(modalRef.value));
         </a>
       </div>
 
-      <NewExpenseInfos
+      <ExpenseModalInfos
         v-if="expenseFormStore.tabId === 0"
         v-model:title="expenseFormStore.title"
         v-model:description="expenseFormStore.description"
@@ -54,7 +54,7 @@ watchEffect(() => props.setModal(modalRef.value));
         :count="count"
         class="mt-4"
       />
-      <NewExpenseParticipants
+      <ExpenseModalParticipants
         v-else-if="expenseFormStore.tabId === 1"
         v-model="expenseFormStore.shares"
         :count="count"

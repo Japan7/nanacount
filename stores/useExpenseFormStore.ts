@@ -30,7 +30,7 @@ export const useExpenseFormStore = defineStore("expense", () => {
   function load(expense: ExpenseData) {
     title.value = expense.title;
     description.value = expense.description ?? undefined;
-    amount.value = dinero(JSON.parse(expense.amount));
+    amount.value = dinero(JSON.parse(expense.originalAmount ?? expense.amount));
     date.value = new Date(expense.date).toISOString().split("T")[0];
     author.value = expense.authorId;
     expense.shares.forEach((share) => {

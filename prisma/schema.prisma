@@ -31,16 +31,17 @@ model Member {
 }
 
 model Expense {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String?
-  amount      String
-  date        DateTime
-  author      Member   @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  authorId    Int
-  shares      Share[]
-  count       Count    @relation(fields: [countId], references: [id], onDelete: Cascade)
-  countId     String
+  id             Int      @id @default(autoincrement())
+  title          String
+  description    String?
+  amount         String
+  originalAmount String?
+  date           DateTime
+  author         Member   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId       Int
+  shares         Share[]
+  count          Count    @relation(fields: [countId], references: [id], onDelete: Cascade)
+  countId        String
 }
 
 model Share {

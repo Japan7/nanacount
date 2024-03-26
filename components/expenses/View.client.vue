@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { TrashIcon } from "@heroicons/vue/24/solid";
-import { add, dinero } from "dinero.js";
+import {
+  add,
+  dinero,
+  haveSameCurrency,
+  type Currency,
+  type Dinero,
+} from "dinero.js";
 
 const props = defineProps<{ count: CountData; currentMember?: number }>();
 
@@ -51,6 +57,17 @@ const expenseFormStore = useExpenseFormStore();
 const selectedExpense = ref<ExpenseData>();
 
 const submit = async () => {
+  const countCurrency = JSON.parse(props.count.currency) as Currency<number>;
+  const date = new Date(expenseFormStore.date!);
+
+  let amount: Dinero<number> = expenseFormStore.amount!;
+  let originalAmount: Dinero<number> | undefined = undefined;
+
+  if (!haveSameCurrency([amount, zero(countCurrency)])) {
+    originalAmount = amount;
+    amount = await convertTo(amount, countCurrency, date);
+  }
+
   const res = await $fetch(`/api/expenses/${selectedExpense.value!.id}`, {
     method: "PUT",
     headers: {
@@ -60,8 +77,9 @@ const submit = async () => {
       countId: props.count.id,
       title: expenseFormStore.title,
       description: expenseFormStore.description,
-      amount: expenseFormStore.amount,
-      date: new Date(expenseFormStore.date!).toISOString(),
+      amount,
+      originalAmount,
+      date: date.toISOString(),
       authorId: expenseFormStore.author,
       // FIXME: this is really ugly
       shares: Object.entries(expenseFormStore.shares)
@@ -149,7 +167,7 @@ const submitDelete = async () => {
       </div>
 
       <div class="cursor-default">
-        <NewExpenseModal :count="count" />
+        <NewExpenseModal :count="count" :current-member="currentMember" />
       </div>
 
       <div class="card card-compact bg-base-200 text-xs cursor-default">

@@ -35,8 +35,10 @@ const concerns = computed(() => {
 });
 
 const expenseAmount = computed(() => dinero(JSON.parse(props.expense.amount)));
-const expenseCurrency = computed(
-  () => toSnapshot(expenseAmount.value).currency
+const expenseOgAmount = computed(() =>
+  props.expense.originalAmount
+    ? dinero(JSON.parse(props.expense.originalAmount))
+    : undefined
 );
 
 const impact = computed(() => {
@@ -44,7 +46,9 @@ const impact = computed(() => {
     (s) => s.memberId === props.currentMember
   );
   const selfShare =
-    idx !== -1 ? props.resolvedShares[idx] : zero(expenseCurrency.value);
+    idx !== -1
+      ? props.resolvedShares[idx]
+      : zero(toSnapshot(expenseAmount.value).currency);
   if (props.expense.authorId === props.currentMember) {
     return subtract(expenseAmount.value, selfShare);
   } else {
@@ -72,8 +76,13 @@ const expenseFormStore = useExpenseFormStore();
   >
     <div class="card-body gap-y-0">
       <h2 class="card-title text-primary">
-        <span class="flex-1">{{ expense.title }}</span>
-        <span>{{ toString(expenseAmount) }}</span>
+        <span class="flex-1 self-baseline">{{ expense.title }}</span>
+        <div class="flex flex-col text-right">
+          <span>{{ toString(expenseAmount) }}</span>
+          <span v-if="expenseOgAmount" class="text-xs">
+            ({{ toString(expenseOgAmount) }})
+          </span>
+        </div>
       </h2>
 
       <p class="flex">

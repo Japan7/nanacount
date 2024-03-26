@@ -4,14 +4,23 @@ export default defineEventHandler(async (event) => {
   const paramId = getRouterParam(event, "id");
   const id = parseInt(paramId!);
 
-  const { countId, title, description, amount, date, authorId, shares } =
-    await readBody(event);
+  const {
+    countId,
+    title,
+    description,
+    amount,
+    originalAmount,
+    date,
+    authorId,
+    shares,
+  } = await readBody(event);
 
   const data: Prisma.ExpenseUpdateInput = {
     count: { connect: { id: countId } },
     title,
     description,
     amount: JSON.stringify(amount),
+    originalAmount: JSON.stringify(originalAmount),
     date,
     author: { connect: { id: authorId } },
     shares: {

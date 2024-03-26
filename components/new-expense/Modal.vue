@@ -1,13 +1,25 @@
 <script setup lang="ts">
 import { PlusIcon } from "@heroicons/vue/24/solid";
+import { haveSameCurrency, type Currency, type Dinero } from "dinero.js";
 
-const props = defineProps<{ count: CountData }>();
+const props = defineProps<{ count: CountData; currentMember?: number }>();
 
 const expenseFormStore = useExpenseFormStore();
 
 const modalRef = ref<HTMLDialogElement | null>(null);
 
 const submit = async () => {
+  const countCurrency = JSON.parse(props.count.currency) as Currency<number>;
+  const date = new Date(expenseFormStore.date!);
+
+  let amount: Dinero<number> = expenseFormStore.amount!;
+  let originalAmount: Dinero<number> | undefined = undefined;
+
+  if (!haveSameCurrency([amount, zero(countCurrency)])) {
+    originalAmount = amount;
+    amount = await convertTo(amount, countCurrency, date);
+  }
+
   const res = await $fetch("/api/expenses", {
     method: "POST",
     headers: {
@@ -17,8 +29,9 @@ const submit = async () => {
       countId: props.count.id,
       title: expenseFormStore.title,
       description: expenseFormStore.description,
-      amount: expenseFormStore.amount,
-      date: new Date(expenseFormStore.date!).toISOString(),
+      amount,
+      originalAmount,
+      date: date.toISOString(),
       authorId: expenseFormStore.author,
       // FIXME: this is really ugly
       shares: Object.entries(expenseFormStore.shares)
@@ -43,6 +56,7 @@ const submit = async () => {
     @click="
       () => {
         expenseFormStore.$reset();
+        expenseFormStore.author = currentMember;
         for (const m of count.members ?? []) {
           expenseFormStore.shares[m.id] = { fraction: 1 };
         }

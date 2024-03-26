@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toSnapshot, type Dinero, type Currency } from "dinero.js";
+import { toSnapshot, type Dinero, type Currency, equal } from "dinero.js";
 
 const props = defineProps<{ count: CountData }>();
 
@@ -9,17 +9,22 @@ const amount = defineModel<Dinero<number>>("amount");
 const date = defineModel<string>("date");
 const author = defineModel<number>("author");
 
-const amountValue = ref(0);
-const amountCurrency = ref<Currency<number>>(
-  amount.value
-    ? toSnapshot(amount.value).currency
-    : JSON.parse(props.count.currency)
-);
+const amountValue = ref<number>();
+const amountCurrency = ref<Currency<number>>(JSON.parse(props.count.currency));
 
 watchEffect(() => {
-  if (amount.value) {
-    amountValue.value = toFloat(amount.value);
-    amountCurrency.value = toSnapshot(amount.value).currency;
+  amountValue.value = amount.value ? toFloat(amount.value) : undefined;
+  amountCurrency.value = amount.value
+    ? toSnapshot(amount.value).currency
+    : JSON.parse(props.count.currency);
+});
+
+watch([amountValue, amountCurrency], ([val, curr]) => {
+  if (val !== undefined) {
+    const newAmount = fromFloat(val, curr);
+    if (!amount.value || !equal(newAmount, amount.value)) {
+      amount.value = newAmount;
+    }
   }
 });
 </script>
@@ -42,18 +47,11 @@ watchEffect(() => {
     <div class="flex items-center gap-x-2">
       <input
         type="number"
+        v-model="amountValue"
         placeholder="Amount"
         class="input input-bordered w-full"
-        :value="amountValue"
-        @input="
-          (ev) => {
-            const amount = (ev.target as HTMLInputElement).valueAsNumber;
-            amountValue = amount;
-          }
-        "
-        @focusout="amount = fromFloat(amountValue, amountCurrency)"
       />
-      <select v-model="amountCurrency" class="select select-bordered" disabled>
+      <select v-model="amountCurrency" class="select select-bordered">
         <option
           v-for="[code, curr] in Object.entries(currencyRecord)"
           :key="code"

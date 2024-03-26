@@ -1,5 +1,14 @@
 import * as currencies from "@dinero.js/currencies";
-import { dinero, toDecimal, type Currency, type Dinero } from "dinero.js";
+import {
+  convert,
+  dinero,
+  toDecimal,
+  toSnapshot,
+  transformScale,
+  type Currency,
+  type Dinero,
+  type Rates,
+} from "dinero.js";
 
 export function zero(currency: Currency<number>): Dinero<number> {
   return dinero({ amount: 0, currency });
@@ -20,7 +29,7 @@ export function toFloat(amount: Dinero<number>): number {
 
 export function toString(amount: Dinero<number>): string {
   return toDecimal(
-    amount,
+    transformScale(amount, toSnapshot(amount).currency.exponent),
     ({ value, currency }) => `${currency.code} ${value}`
   );
 }
@@ -28,3 +37,22 @@ export function toString(amount: Dinero<number>): string {
 export const currencyRecord = Object.fromEntries(
   Object.values(currencies).map((currency) => [currency.code, currency])
 );
+
+export async function convertTo(
+  amount: Dinero<number>,
+  currency: Currency<number>,
+  date: Date
+): Promise<Dinero<number>> {
+  const ogCurrency = toSnapshot(amount).currency;
+  const code = ogCurrency.code.toLowerCase();
+  const dateStr = date.toLocaleDateString("en-CA"); // YYYY-MM-DD
+  const data = await $fetch<any>(
+    `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@${dateStr}/v1/currencies/${code}.min.json`
+  );
+  const rate = fromFloat(data[code][currency.code.toLowerCase()], currency);
+  const snap = toSnapshot(rate);
+  const rates: Rates<number> = {
+    [currency.code]: { amount: snap.amount, scale: snap.scale },
+  };
+  return convert(amount, currency, rates);
+}

@@ -19,7 +19,7 @@
     "@nuxtjs/tailwindcss": "6.11.4",
     "@pinia/nuxt": "0.5.1",
     "@prisma/client": "5.11.0",
-    "@tailwindcss/typography": "0.5.11",
+    "@tailwindcss/typography": "0.5.12",
     "@types/lodash": "4.17.0",
     "@vueuse/core": "10.9.0",
     "@vueuse/nuxt": "10.9.0",

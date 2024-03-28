@@ -14,14 +14,17 @@ const amountCurrency = ref<Currency<number>>(JSON.parse(props.count.currency));
 
 watchEffect(() => {
   amountValue.value = amount.value ? toFloat(amount.value) : undefined;
+});
+
+watchEffect(() => {
   amountCurrency.value = amount.value
     ? toSnapshot(amount.value).currency
     : JSON.parse(props.count.currency);
 });
 
-watch([amountValue, amountCurrency], ([val, curr]) => {
-  if (val !== undefined) {
-    const newAmount = fromFloat(val, curr);
+watchEffect(() => {
+  if (typeof amountValue.value === "number") {
+    const newAmount = fromFloat(amountValue.value, amountCurrency.value);
     if (!amount.value || !equal(newAmount, amount.value)) {
       amount.value = newAmount;
     }

@@ -21,7 +21,7 @@
     "@prisma/client": "5.14.0",
     "@tailwindcss/typography": "0.5.13",
     "@types/lodash": "4.17.4",
-    "@vueuse/core": "10.9.0",
+    "@vueuse/core": "10.10.0",
     "@vueuse/nuxt": "10.9.0",
     "chart.js": "4.4.3",
     "daisyui": "4.11.1",

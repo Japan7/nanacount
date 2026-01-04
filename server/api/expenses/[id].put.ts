@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import * as Prisma from "@@/generated/prisma/models";
 
 export default defineEventHandler(async (event) => {
   const paramId = getRouterParam(event, "id");

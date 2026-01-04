@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { zero } from "#shared/utils/dinero";
 import { DocumentTextIcon, UserGroupIcon } from "@heroicons/vue/24/solid";
 
 const props = defineProps<{

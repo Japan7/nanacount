@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { currencyRecord } from "#shared/utils/dinero";
 import { EUR } from "@dinero.js/currencies";
 
 defineProps<{ disableCurrencySelect?: boolean }>();

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { toString } from "#shared/utils/dinero";
 import { TrashIcon } from "@heroicons/vue/24/solid";
 import {
   add,
@@ -45,7 +46,7 @@ const selfTotal = computed(() =>
   sortedExpenses.value.reduce((acc, e, i) => {
     const idx = e.shares.findIndex((s) => s.memberId === props.currentMember);
     const selfShare =
-      idx !== -1 ? allResolvedShares.value[i][idx] : zero(countCurrency.value);
+      idx !== -1 ? allResolvedShares.value[i]![idx]! : zero(countCurrency.value);
     return add(acc, selfShare);
   }, zero(countCurrency.value))
 );
@@ -116,7 +117,7 @@ const submitDelete = async () => {
         :key="e.id"
         :count="count"
         :expense="e"
-        :resolved-shares="allResolvedShares[i]"
+        :resolved-shares="allResolvedShares[i]!"
         :show-modal="() => modalRef?.showModal()"
         :current-member="currentMember"
         @click="selectedExpense = e"

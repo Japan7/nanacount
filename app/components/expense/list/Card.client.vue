@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { toString } from "#shared/utils/dinero";
 import {
   dinero,
   isNegative,
@@ -47,7 +48,7 @@ const impact = computed(() => {
   );
   const selfShare =
     idx !== -1
-      ? props.resolvedShares[idx]
+      ? props.resolvedShares[idx]!
       : zero(toSnapshot(expenseAmount.value).currency);
   if (props.expense.authorId === props.currentMember) {
     return subtract(expenseAmount.value, selfShare);

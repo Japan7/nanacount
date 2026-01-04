@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import * as Prisma from "@@/generated/prisma/models";
 
 export default defineEventHandler(async (event) => {
   const { title, description, currency, members } = await readBody(event);

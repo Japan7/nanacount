@@ -26,7 +26,7 @@ export function computeSharesAmount(
     shares.map((s) => s.fraction || 0)
   );
   for (let idx = 0; idx < shares.length; idx++) {
-    allocations[idx] = shares[idx].amount ?? allocations[idx];
+    allocations[idx] = shares[idx]!.amount ?? allocations[idx]!;
   }
   return allocations;
 }
@@ -52,7 +52,7 @@ export function computeBalances(
   return members.map((m) =>
     expenses.reduce((acc, e, i) => {
       const idx = e.shares.findIndex((s) => s.memberId === m.id);
-      const share = idx !== -1 ? resolved[i][idx] : zero(countCurrency);
+      const share = idx !== -1 ? resolved[i]![idx]! : zero(countCurrency);
       if (e.authorId === m.id) {
         return add(acc, subtract(dinero(JSON.parse(e.amount)), share));
       } else {
@@ -70,7 +70,7 @@ export function computeReimbursments(
   const reimb: Reimbursment[] = [];
 
   for (let i = 0; i < balances.length; i++) {
-    while (isNegative(balances[i])) {
+    while (isNegative(balances[i]!)) {
       const j = balances.findIndex((v) => isPositive(v));
       if (j === -1) {
         if (i === balances.length - 1) {
@@ -79,12 +79,12 @@ export function computeReimbursments(
           throw new Error("No positive balance found");
         }
       }
-      const amount = minimum([multiply(balances[i], -1), balances[j]]);
-      balances[i] = add(balances[i], amount);
-      balances[j] = subtract(balances[j], amount);
+      const amount = minimum([multiply(balances[i]!, -1), balances[j]!]);
+      balances[i] = add(balances[i]!, amount);
+      balances[j] = subtract(balances[j]!, amount);
       reimb.push({
-        from: members[i],
-        to: members[j],
+        from: members[i]!,
+        to: members[j]!,
         amount,
       });
     }

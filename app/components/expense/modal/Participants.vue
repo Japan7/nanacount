@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { fromFloat } from "#shared/utils/dinero";
 import { isPositive, toSnapshot, type Dinero } from "dinero.js";
 
 const props = defineProps<{
@@ -18,24 +19,28 @@ const updateSharesAmount = () => {
   const mIds = props.count.members.map((m) => m.id);
   for (const id of mIds) {
     const share = model.value[id];
-    if (share.fraction !== undefined) {
+    if (share?.fraction !== undefined) {
       formattedShares.push({ fraction: share.fraction });
-    } else {
+    } else if (share?.amount) {
       formattedShares.push({ fraction: undefined, amount: share.amount });
+    } else {
+      formattedShares.push({ fraction: 0 });
     }
   }
   const shares = computeSharesAmount(props.expenseAmount, formattedShares);
   floatSharesAmount.value.clear();
   for (let i = 0; i < mIds.length; i++) {
-    const amount = shares[i];
-    model.value[mIds[i]].amount = amount;
-    floatSharesAmount.value.set(mIds[i], toFloat(amount));
+    const amount = shares[i]!;
+    model.value[mIds[i]!]!.amount = amount;
+    floatSharesAmount.value.set(mIds[i]!, toFloat(amount));
   }
 };
 updateSharesAmount();
 
 const memberIsConcerned = (m: MemberData) => {
-  const { fraction, amount } = model.value[m.id];
+  const share = model.value[m.id];
+  if (!share) return false;
+  const { fraction, amount } = share;
   return fraction || (amount && isPositive(amount));
 };
 
@@ -85,7 +90,7 @@ const isEveryoneConcerned = computed(() =>
               <input
                 type="checkbox"
                 class="checkbox"
-                :checked="model[m.id].fraction !== 0"
+                :checked="model[m.id]?.fraction !== 0"
                 @click="
                   () => {
                     model[m.id] = memberIsConcerned(m)
@@ -104,8 +109,8 @@ const isEveryoneConcerned = computed(() =>
               min="0"
               step="1"
               class="input input-bordered input-sm w-full"
-              v-model="model[m.id].fraction"
-              @input="updateSharesAmount()"
+              :value="model[m.id]?.fraction"
+              @input="(ev) => { if (model[m.id]) { model[m.id]!.fraction = (ev.target as HTMLInputElement).valueAsNumber; updateSharesAmount(); } }"
             />
           </td>
           <td>

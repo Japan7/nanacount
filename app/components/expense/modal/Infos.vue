@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { toSnapshot, type Dinero, type Currency, equal } from "dinero.js";
+import { currencyRecord } from "#shared/utils/dinero";
+import { equal, toSnapshot, type Currency, type Dinero } from "dinero.js";
 
 const props = defineProps<{ count: CountData }>();
 

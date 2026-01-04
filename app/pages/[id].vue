@@ -50,7 +50,7 @@ const currentMember = computed(() =>
         <option disabled selected value="">Identify as…</option>
         <option v-for="m in data.members" :value="m.id">{{ m.name }}</option>
       </select>
-      <button class="btn btn-sm btn-success" @click="refreshNuxtData()">
+      <button class="btn btn-sm btn-success" @click="refresh()">
         <ArrowPathIcon class="h-4 w-4" />
       </button>
     </div>

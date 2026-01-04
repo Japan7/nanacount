@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { toString } from "#shared/utils/dinero";
 import { CheckIcon } from "@heroicons/vue/24/solid";
 import type { Dinero } from "dinero.js";
 

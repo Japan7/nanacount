@@ -1,6 +1,6 @@
 // https://www.prisma.io/docs/guides/database/troubleshooting-orm/help-articles/nextjs-prisma-client-dev-practices
+import { PrismaClient } from "@@/generated/prisma/client";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
-import { PrismaClient } from "../../generated/prisma/client";
 
 const prismaClientSingleton = () => {
   const adapter = new PrismaBetterSqlite3({

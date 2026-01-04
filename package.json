@@ -16,26 +16,26 @@
     "typecheck": "nuxt typecheck"
   },
   "devDependencies": {
-    "@heroicons/vue": "2.1.5",
+    "@heroicons/vue": "2.2.0",
     "@nuxtjs/tailwindcss": "6.14.0",
     "@pinia/nuxt": "0.11.3",
     "@prisma/adapter-better-sqlite3": "7.2.0",
     "@prisma/client": "7.2.0",
     "@tailwindcss/typography": "0.5.19",
-    "@types/lodash": "4.17.4",
+    "@types/lodash": "4.17.21",
     "@types/node": "25.0.3",
     "@vueuse/core": "14.1.0",
     "@vueuse/nuxt": "14.1.0",
-    "chart.js": "4.4.3",
-    "daisyui": "4.12.2",
+    "chart.js": "4.5.1",
+    "daisyui": "4.12.24",
     "dinero.js": "2.0.0-alpha.14",
     "lodash": "4.17.21",
     "nuxt": "4.2.2",
     "pinia": "3.0.4",
     "prisma": "7.2.0",
     "typescript": "5.9.3",
-    "vue-chartjs": "5.3.1",
-    "vue-router": "4.3.2",
+    "vue-chartjs": "5.3.3",
+    "vue-router": "4.6.4",
     "vue-tsc": "3.2.1"
   }
 }

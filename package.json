@@ -21,7 +21,7 @@
     "@pinia/nuxt": "0.11.3",
     "@prisma/adapter-better-sqlite3": "7.2.0",
     "@prisma/client": "7.2.0",
-    "@tailwindcss/typography": "0.5.13",
+    "@tailwindcss/typography": "0.5.19",
     "@types/lodash": "4.17.4",
     "@types/node": "25.0.3",
     "@vueuse/core": "14.1.0",

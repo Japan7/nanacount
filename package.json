@@ -16,7 +16,7 @@
     "typecheck": "nuxt typecheck"
   },
   "devDependencies": {
-    "@heroicons/vue": "2.1.3",
+    "@heroicons/vue": "2.1.5",
     "@nuxtjs/tailwindcss": "6.14.0",
     "@pinia/nuxt": "0.11.3",
     "@prisma/adapter-better-sqlite3": "7.2.0",

@@ -1,12 +1,21 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>Japan7/renovate-config", "config:js-app"],
-  "postUpdateOptions": ["npmInstallTwice"],
+  "extends": [
+    "github>Japan7/renovate-config",
+    "config:js-app"
+  ],
+  "postUpdateOptions": [
+    "npmInstallTwice"
+  ],
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": ["^Dockerfile$"],
-      "matchStrings": ["prisma@(?<currentValue>\\S+)"],
+      "managerFilePatterns": [
+        "/^Dockerfile$/"
+      ],
+      "matchStrings": [
+        "prisma@(?<currentValue>\\S+)"
+      ],
       "depNameTemplate": "prisma",
       "datasourceTemplate": "npm"
     }

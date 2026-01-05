@@ -36,6 +36,6 @@
     "typescript": "5.9.3",
     "vue-chartjs": "5.3.3",
     "vue-router": "4.6.4",
-    "vue-tsc": "3.2.1"
+    "vue-tsc": "3.2.2"
   }
 }

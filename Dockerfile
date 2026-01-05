@@ -9,6 +9,7 @@ RUN npm run build
 FROM node:lts-alpine AS runner
 ENV NODE_ENV=production
 WORKDIR /app
+RUN npm i -g prisma@7.2.0
 COPY prisma prisma
 COPY prisma.config.js .
 COPY --from=builder --chown=node /src/.output .

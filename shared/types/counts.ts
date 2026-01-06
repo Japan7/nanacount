@@ -1,5 +1,5 @@
 import type { Dinero } from "dinero.js";
-import type { InternalApi } from "nitropack";
+import type { MemberData } from "./server";
 
 export interface ExpenseShares {
   [id: number]:
@@ -12,11 +12,3 @@ export interface Reimbursment {
   to: MemberData;
   amount: Dinero<number>;
 }
-
-export type CountData = InternalApi["/api/counts/:id"]["get"] extends
-  | infer T
-  | null
-  ? T
-  : never;
-export type MemberData = CountData["members"][number];
-export type ExpenseData = CountData["expenses"][number];

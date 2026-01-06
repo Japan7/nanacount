@@ -10,6 +10,9 @@ import {
   type Currency,
   type Dinero,
 } from "dinero.js";
+import type { ExpenseShares, Reimbursment } from "../types/counts";
+import type { ExpenseData, MemberData } from "../types/server";
+import { zero } from "./dinero";
 
 export function computeSharesAmount(
   amount: Dinero<number>,

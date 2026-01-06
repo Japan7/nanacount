@@ -15,7 +15,7 @@
     "postinstall": "nuxt prepare && prisma generate",
     "typecheck": "nuxt typecheck"
   },
-  "devDependencies": {
+  "dependencies": {
     "@heroicons/vue": "2.2.0",
     "@nuxtjs/tailwindcss": "6.14.0",
     "@pinia/nuxt": "0.11.3",
@@ -34,6 +34,7 @@
     "pinia": "3.0.4",
     "prisma": "7.2.0",
     "typescript": "5.9.3",
+    "vue": "3.5.26",
     "vue-chartjs": "5.3.3",
     "vue-router": "4.6.4",
     "vue-tsc": "3.2.2"

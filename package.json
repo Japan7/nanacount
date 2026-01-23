@@ -30,7 +30,7 @@
     "daisyui": "4.12.24",
     "dinero.js": "2.0.0-alpha.14",
     "lodash": "4.17.23",
-    "nuxt": "4.2.2",
+    "nuxt": "4.3.0",
     "pinia": "3.0.4",
     "prisma": "7.3.0",
     "typescript": "5.9.3",

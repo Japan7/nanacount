@@ -27,7 +27,7 @@
     "@vueuse/core": "14.1.0",
     "@vueuse/nuxt": "14.1.0",
     "chart.js": "4.5.1",
-    "daisyui": "4.12.24",
+    "daisyui": "5.5.14",
     "dinero.js": "2.0.0-alpha.14",
     "lodash": "4.17.23",
     "nuxt": "4.3.0",

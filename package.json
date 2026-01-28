@@ -23,7 +23,7 @@
     "@prisma/client": "7.3.0",
     "@tailwindcss/typography": "0.5.19",
     "@types/lodash": "4.17.23",
-    "@types/node": "25.0.10",
+    "@types/node": "25.1.0",
     "@vueuse/core": "14.1.0",
     "@vueuse/nuxt": "14.1.0",
     "chart.js": "4.5.1",

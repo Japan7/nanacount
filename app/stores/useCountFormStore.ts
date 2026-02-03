@@ -1,15 +1,15 @@
-import { EUR } from "@dinero.js/currencies";
-import type { Currency } from "dinero.js";
+import type { DineroCurrency } from "dinero.js";
+import { EUR } from "dinero.js/currencies";
 import _ from "lodash";
 
 export const useCountFormStore = defineStore("count-form", () => {
   const title = ref<string>();
   const description = ref<string>();
-  const currency = ref<Currency<number>>(EUR);
+  const currency = ref<DineroCurrency<number>>(EUR);
   const members = ref<string>();
 
   const membersArray = computed(() =>
-    _.uniq(members.value?.split("\n").filter((m) => m))
+    _.uniq(members.value?.split("\n").filter((m) => m)),
   );
 
   const formValid = computed(() => title.value && membersArray.value.length);

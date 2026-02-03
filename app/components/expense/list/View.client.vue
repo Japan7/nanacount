@@ -5,8 +5,8 @@ import {
   add,
   dinero,
   haveSameCurrency,
-  type Currency,
   type Dinero,
+  type DineroCurrency,
 } from "dinero.js";
 
 const props = defineProps<{ count: CountData; currentMember?: number }>();
@@ -16,15 +16,15 @@ const countCurrency = computed(() => JSON.parse(props.count.currency));
 const sortedExpenses = computed(() =>
   props.count.expenses.sort(
     (a, b) =>
-      new Date(b.date).getTime() - new Date(a.date).getTime() || b.id - a.id
-  )
+      new Date(b.date).getTime() - new Date(a.date).getTime() || b.id - a.id,
+  ),
 );
 
 const total = computed(() =>
   props.count.expenses.reduce(
     (acc, e) => add(acc, dinero(JSON.parse(e.amount))),
-    zero(countCurrency.value)
-  )
+    zero(countCurrency.value),
+  ),
 );
 
 const allResolvedShares = computed(() =>
@@ -36,19 +36,21 @@ const allResolvedShares = computed(() =>
           ({
             fraction: s.fraction !== null ? s.fraction : undefined,
             amount: s.amount ? dinero(JSON.parse(s.amount)) : undefined,
-          } as ExpenseShares[number])
-      )
-    )
-  )
+          }) as ExpenseShares[number],
+      ),
+    ),
+  ),
 );
 
 const selfTotal = computed(() =>
   sortedExpenses.value.reduce((acc, e, i) => {
     const idx = e.shares.findIndex((s) => s.memberId === props.currentMember);
     const selfShare =
-      idx !== -1 ? allResolvedShares.value[i]![idx]! : zero(countCurrency.value);
+      idx !== -1
+        ? allResolvedShares.value[i]![idx]!
+        : zero(countCurrency.value);
     return add(acc, selfShare);
-  }, zero(countCurrency.value))
+  }, zero(countCurrency.value)),
 );
 
 const modalRef = ref<HTMLDialogElement | null>(null);
@@ -58,7 +60,9 @@ const expenseFormStore = useExpenseFormStore();
 const selectedExpense = ref<ExpenseData>();
 
 const submit = async () => {
-  const countCurrency = JSON.parse(props.count.currency) as Currency<number>;
+  const countCurrency = JSON.parse(
+    props.count.currency,
+  ) as DineroCurrency<number>;
   const date = new Date(expenseFormStore.date!);
 
   let amount: Dinero<number> = expenseFormStore.amount!;

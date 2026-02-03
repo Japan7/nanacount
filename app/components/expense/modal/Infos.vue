@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { currencyRecord } from "#shared/utils/dinero";
-import { equal, toSnapshot, type Currency, type Dinero } from "dinero.js";
+import { equal, toSnapshot, type Dinero, type DineroCurrency } from "dinero.js";
 
 const props = defineProps<{ count: CountData }>();
 
@@ -11,7 +11,9 @@ const date = defineModel<string>("date");
 const author = defineModel<number>("author");
 
 const amountValue = ref<number>();
-const amountCurrency = ref<Currency<number>>(JSON.parse(props.count.currency));
+const amountCurrency = ref<DineroCurrency<number>>(
+  JSON.parse(props.count.currency),
+);
 
 watchEffect(() => {
   amountValue.value = amount.value ? toFloat(amount.value) : undefined;

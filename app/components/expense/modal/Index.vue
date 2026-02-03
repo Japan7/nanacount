@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PlusIcon } from "@heroicons/vue/24/solid";
-import { haveSameCurrency, type Currency, type Dinero } from "dinero.js";
+import { haveSameCurrency, type Dinero, type DineroCurrency } from "dinero.js";
 
 const props = defineProps<{ count: CountData; currentMember?: number }>();
 
@@ -9,7 +9,9 @@ const expenseFormStore = useExpenseFormStore();
 const modalRef = ref<HTMLDialogElement | null>(null);
 
 const submit = async () => {
-  const countCurrency = JSON.parse(props.count.currency) as Currency<number>;
+  const countCurrency = JSON.parse(
+    props.count.currency,
+  ) as DineroCurrency<number>;
   const date = new Date(expenseFormStore.date!);
 
   let amount: Dinero<number> = expenseFormStore.amount!;

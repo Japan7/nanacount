@@ -7,8 +7,8 @@ import {
   minimum,
   multiply,
   subtract,
-  type Currency,
   type Dinero,
+  type DineroCurrency,
 } from "dinero.js";
 import type { ExpenseShares, Reimbursment } from "../types/counts";
 import type { ExpenseData, MemberData } from "../types/server";
@@ -16,7 +16,7 @@ import { zero } from "./dinero";
 
 export function computeSharesAmount(
   amount: Dinero<number>,
-  shares: ExpenseShares[number][]
+  shares: ExpenseShares[number][],
 ): Dinero<number>[] {
   let left = amount;
   for (const share of shares) {
@@ -26,7 +26,7 @@ export function computeSharesAmount(
   }
   const allocations = allocate(
     left,
-    shares.map((s) => s.fraction || 0)
+    shares.map((s) => s.fraction || 0),
   );
   for (let idx = 0; idx < shares.length; idx++) {
     allocations[idx] = shares[idx]!.amount ?? allocations[idx]!;
@@ -37,7 +37,7 @@ export function computeSharesAmount(
 export function computeBalances(
   expenses: ExpenseData[],
   members: MemberData[],
-  countCurrency: Currency<number>
+  countCurrency: DineroCurrency<number>,
 ): Dinero<number>[] {
   const resolved = expenses.map((e) => {
     return computeSharesAmount(
@@ -47,8 +47,8 @@ export function computeBalances(
           ({
             fraction: s.fraction !== null ? s.fraction : undefined,
             amount: s.amount ? dinero(JSON.parse(s.amount)) : undefined,
-          } as ExpenseShares[number])
-      )
+          }) as ExpenseShares[number],
+      ),
     );
   });
 
@@ -61,13 +61,13 @@ export function computeBalances(
       } else {
         return subtract(acc, share);
       }
-    }, zero(countCurrency))
+    }, zero(countCurrency)),
   );
 }
 
 export function computeReimbursments(
   members: MemberData[],
-  inputBalances: Dinero<number>[]
+  inputBalances: Dinero<number>[],
 ): Reimbursment[] {
   const balances = [...inputBalances];
   const reimb: Reimbursment[] = [];

@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { currencyRecord } from "#shared/utils/dinero";
-import { EUR } from "dinero.js/currencies";
+import { EUR, type DineroCurrency } from "dinero.js/currencies";
 
 defineProps<{ disableCurrencySelect?: boolean }>();
 
 const title = defineModel("title");
 const description = defineModel("description", { default: "" });
-const currency = defineModel("currency", { default: EUR });
+const currency = defineModel<DineroCurrency<number>>("currency", {
+  default: EUR,
+});
 const members = defineModel("members", { default: "" });
 </script>
 

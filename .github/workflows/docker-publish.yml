@@ -62,8 +62,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           outputs: type=image,push-by-digest=true,name-canonical=true,push=${{ (github.event_name != 'pull_request') && !startsWith(github.ref, 'refs/heads/renovate') }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=buildkit-${{ env.PLATFORM_PAIR }}
+          cache-to: type=gha,mode=max,scope=buildkit-${{ env.PLATFORM_PAIR }}
 
       - name: Export digest
         run: |
